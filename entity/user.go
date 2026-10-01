@@ -1,9 +1,6 @@
 package entity
 
-
-type User struct{
-	Id string
-	IsAdmin bool
-	 
+type User interface{
+	ToJson() (string, error)
+	GetId() (string)
 }
-
