@@ -3,6 +3,8 @@ module wg.dde1ta
 go 1.27.1
 
 require (
-	github.com/gofrs/flock v0.13.1 // indirect
-	golang.org/x/sys v0.47.0 // indirect
+	github.com/gofrs/flock v0.13.1 // direct
+	golang.org/x/crypto v0.57.0 // direct
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/term v0.46.0 // direct
 )

@@ -1,3 +1,9 @@
 .git
 .vscode
 
+*.sh
+
+test.txt
+test.txt.lock
+
+out/
