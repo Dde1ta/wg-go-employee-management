@@ -7,6 +7,9 @@ import (
 	"wg.dde1ta/repo"
 )
 
+var notLoggedInError error = errors.New("You are not logged in / Invalid Session")
+var forbiddenError error = errors.New("Forbidden action")
+
 type AuthService struct {
 	employeeRepo *repo.EmployeeRepo
 	usersRepo *repo.UsersReadOnlyRepo
