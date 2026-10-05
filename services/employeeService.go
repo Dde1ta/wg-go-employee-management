@@ -8,8 +8,6 @@ import (
 	"wg.dde1ta/repo"
 )
 
-
-
 type EmployeeService struct {
 	employeeRepo *repo.EmployeeRepo
 }
@@ -60,25 +58,24 @@ func (ES *EmployeeService) UpdateEmployeeDetails(id, newData, field string) (err
 		if session.UserId != id{
 			return forbiddenError
 		}
-		ES.employeeRepo.UpdateEmployee(id, newData, field)
+		return ES.employeeRepo.UpdateEmployee(id, newData, field)
 	case "email":
 		if session.UserId != id{
 			return forbiddenError
 		}
-		ES.employeeRepo.UpdateEmployee(id, newData, field)
+		return ES.employeeRepo.UpdateEmployee(id, newData, field)
 	case "contact_number":
 		if session.UserId != id{
 			return forbiddenError
 		}
-		ES.employeeRepo.UpdateEmployee(id, newData, field)
+		return ES.employeeRepo.UpdateEmployee(id, newData, field)
 	case "password":
 		if session.UserId != id{
 			return forbiddenError
 		}
-		ES.employeeRepo.UpdateEmployee(id, newData, field)
+		return ES.employeeRepo.UpdateEmployee(id, newData, field)
 	default:
 		return fmt.Errorf("Invalid Field %s, Vaild are name, email, contact_number, password", field)
 	}
-	return forbiddenError
 }
 

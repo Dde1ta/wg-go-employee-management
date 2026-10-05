@@ -9,9 +9,17 @@ import (
 )
 
 type AdminService struct {
-	employeeRepo repo.EmployeeRepo
-	adminRepo    repo.AdminRepo
-	usersRepo    repo.UsersReadOnlyRepo
+	employeeRepo *repo.EmployeeRepo
+	adminRepo    *repo.AdminRepo
+	usersRepo    *repo.UsersReadOnlyRepo
+}
+
+func NewAdminService(dbFilePath string) AdminService{
+	return AdminService{
+		employeeRepo: repo.NewEmployeeRepo(dbFilePath),
+		adminRepo: repo.NewAdminRepo(dbFilePath),
+		usersRepo: repo.NewUsersRepo(dbFilePath),
+	}
 }
 
 func (AS *AdminService) UpdateEmployeeDetails(id, newData, field string) error {
@@ -26,17 +34,15 @@ func (AS *AdminService) UpdateEmployeeDetails(id, newData, field string) error {
 		if session.UserRole != "admin" {
 			return forbiddenError
 		}
-		AS.employeeRepo.UpdateEmployee(id, newData, field)
+		return AS.employeeRepo.UpdateEmployee(id, newData, field)
 	case "position":
 		if session.UserRole != "admin" {
 			return forbiddenError
 		}
-		AS.employeeRepo.UpdateEmployee(id, newData, field)
+		return AS.employeeRepo.UpdateEmployee(id, newData, field)
 	default:
 		return fmt.Errorf("Invalid Field %s, Vaild are position, department", field)
 	}
-
-	return forbiddenError
 }
 
 func (AS *AdminService) DeleteEmployee(id string) error {
@@ -50,7 +56,7 @@ func (AS *AdminService) DeleteEmployee(id string) error {
 		return forbiddenError
 	}
 
-	return AS.DeleteEmployee(id)
+	return AS.employeeRepo.DeleteEmployee(id)
 }
 
 func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {

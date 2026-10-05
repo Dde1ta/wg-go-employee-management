@@ -88,5 +88,3 @@ func (db *DB) SaveToDB(data string) (error) {
 
 	return err
 }
-
-func (dv *DB) StartTransaction()

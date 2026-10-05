@@ -16,10 +16,11 @@ type AuthService struct {
 	adminRepo *repo.AdminRepo
 }
 
-func NewAuthService(dbFile string) *AuthService {
-	return &AuthService{
-		employeeRepo: repo.NewEmployeeRepo(dbFile),
-		adminRepo: repo.NewAdminRepo(dbFile),
+func NewAuthService(dbFilePath string) AuthService {
+	return AuthService{
+		employeeRepo: repo.NewEmployeeRepo(dbFilePath),
+		adminRepo: repo.NewAdminRepo(dbFilePath),
+		usersRepo: repo.NewUsersRepo(dbFilePath),
 	}
 }
 

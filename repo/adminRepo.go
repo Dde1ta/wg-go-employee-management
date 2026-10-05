@@ -35,8 +35,6 @@ func (AR *AdminRepo) getUsers() ([]entity.User, error) {
 }
 
 func (AR *AdminRepo) saveToDB(array []entity.User) error {
-	fmt.Println("Debug: Saving", array)
-
 	toSave, err := json.Marshal(array)
 
 	if err != nil {
