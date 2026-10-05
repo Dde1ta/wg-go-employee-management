@@ -6,8 +6,9 @@ import (
 )
 
 type Admin struct {
-	Id string             `json:"id" validate:"required"`
+	Id    string          `json:"id" validate:"required"`
 	Email string 		  `json:"email" validate:"required,email"`
+	Role  string 		  `json:"role"`
 	PasswordHashed string `json:"password" validate:"required"`
 }
 
@@ -22,6 +23,7 @@ func NewAdmin(email, password string) (Admin, error) {
 		Id: newId.String(),
 		Email: email,
 		PasswordHashed: password,
+		Role: "admin",
 	}
 
 	err = myValidator.Struct(newAdmin)
@@ -45,4 +47,16 @@ func (adm Admin) ToJson() (string, error){
 
 func (adm Admin) GetId() (string) {
 	return adm.Id
+}
+
+func (adm Admin) GetRole() (string) {
+	return adm.Role
+}
+
+func (adm Admin) GetEmail() (string) {
+	return adm.Email
+}
+
+func (adm Admin) Validate() (error) {
+	return myValidator.Struct(adm)
 }

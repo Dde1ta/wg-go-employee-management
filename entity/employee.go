@@ -9,10 +9,12 @@ type Employee struct {
 	Id    string            `json:"id" validate:"required"`
 	Name  string          	`json:"name" validate:"required"`
 	Email string 		  	`json:"email" validate:"required,email"`
-	Phone string 		  	`json:"phone_number" validate:"required,len=10"`
+	Phone string 		  	`json:"contact_number" validate:"required,len=10"`
+	Role  string			`json:"role"`		
 	PasswordHashed string 	`json:"password" validate:"required"`
 	Department     string 	`json:"department" validate:"required"`
-	Position       string 	`json:"position" validate:"required"`
+	Position       string 	`json:"position" validate:"required"` 		
+	 		
 }
 
 func NewEmployee(name, email, password, phone, department, position string) (Employee, error) {
@@ -30,6 +32,7 @@ func NewEmployee(name, email, password, phone, department, position string) (Emp
 		PasswordHashed: password,
 		Department: department,
 		Position: position,
+		Role: "employee",
 	}
 
 	err = myValidator.Struct(newEmployee)
@@ -53,4 +56,16 @@ func (emp Employee) ToJson() (string, error){
 
 func (emp Employee) GetId() (string) {
 	return emp.Id
+}
+
+func (emp Employee) GetRole() (string) {
+	return emp.Role
+}
+
+func (emp Employee) GetEmail() (string) {
+	return emp.Email
+}
+
+func (emp Employee) Validate() (error) {
+	return myValidator.Struct(emp)
 }

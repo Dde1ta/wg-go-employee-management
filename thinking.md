@@ -6,34 +6,24 @@
 This is the initial stucture for a simple employee management system json file.
 ```json
 // db.json
-{
-    "user_data": {
-        "employees": [
-            {
-                "id": "string",
-                "name": "string",
-                "email": "string",
-                "password_hashed": "string",
-                "contact_number": "int",
-                "department": "string",
-                "position": "string"
-            },
-            {
-                // Similar
-            }
-        ],
-        "admins": [
-            {
-                "id": "string",
-                "email": "string",
-                "password_hashed": "string"
-            },
-            {
-                // Similar
-            }
-        ]
+[
+    {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "password_hashed": "string",
+        "contact_number": "int",
+        "department": "string",
+        "position": "string",
+        "role": "employee"
     },
-}
+    {
+        "role": "admin",
+        "id": "string",
+        "email": "string",
+        "password_hashed": "string"
+    },
+]
 // logs.json
 
 [
