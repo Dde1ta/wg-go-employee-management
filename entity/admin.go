@@ -60,3 +60,7 @@ func (adm Admin) GetEmail() (string) {
 func (adm Admin) Validate() (error) {
 	return myValidator.Struct(adm)
 }
+
+func (adm Admin) GetPassword() (string){
+	return adm.PasswordHashed
+}

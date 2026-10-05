@@ -69,3 +69,7 @@ func (emp Employee) GetEmail() (string) {
 func (emp Employee) Validate() (error) {
 	return myValidator.Struct(emp)
 }
+
+func (emp Employee) GetPassword() (string) {
+	return emp.PasswordHashed
+}

@@ -13,3 +13,12 @@ func NewDBFile(dbFilePath string) *DBFile{
 		fm: files.NewFileManager(dbFilePath),
 	}
 }
+
+
+func (dbFile *DBFile) StartWrite() error {
+	return dbFile.fm.LockFile.GetWriteLock()
+}
+
+func (dbFile *DBFile) CompleteWrite() error {
+	return dbFile.fm.LockFile.UnlockWriteLock()
+}

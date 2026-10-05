@@ -71,7 +71,7 @@ func (ER *EmployeeRepo) UpdateEmployee(id string, newData string, field string) 
 	/**
 	Valid Fields := Name, Email, Password, Contact Number
 	*/
-
+	
 	users, err := ER.getUsers()
 
 	if err != nil {

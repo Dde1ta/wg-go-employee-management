@@ -5,5 +5,6 @@ type User interface{
 	GetId() (string)
 	GetRole() (string)
 	GetEmail() (string)
+	GetPassword() (string)
 	Validate() (error)
 }

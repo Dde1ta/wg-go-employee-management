@@ -7,24 +7,24 @@ import (
 
 type FileManager struct {
 	filePath string
-	lockFile *LockFile
+	LockFile *LockFile
 }
 
 func NewFileManager(filepath string) *FileManager {
 	return &FileManager{
 		filePath: filepath,
-		lockFile: NewLockFile(filepath + ".lock"),
+		LockFile: NewLockFile(filepath + ".lock"),
 	}
 }
 
 func (file FileManager) Read() (string, error) {
-	err := file.lockFile.GetReadLock()
+	err := file.LockFile.GetReadLock()
 
 	if err != nil {
 		return "", err
 	}
 
-	defer file.lockFile.UnlockReadLock()
+	defer file.LockFile.UnlockReadLock()
 
 	var fileContentByte []byte
 	fileContentByte, err = os.ReadFile(file.filePath)
@@ -53,11 +53,11 @@ func (file FileManager) Write(content string) error {
 		return err
 	}
 
-	err = file.lockFile.GetWriteLock()
+	err = file.LockFile.GetWriteLock()
 	if err != nil {
 		return err
 	}
-	defer file.lockFile.UnlockWriteLock()
+	defer file.LockFile.UnlockWriteLock()
 
 	err = os.Rename(tempPath, file.filePath)
 	if err != nil {
@@ -66,4 +66,3 @@ func (file FileManager) Write(content string) error {
 
 	return nil
 }
-
