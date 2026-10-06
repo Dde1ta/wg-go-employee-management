@@ -34,7 +34,7 @@ func EmployeeSignupPage() error {
 	position, _ := reader.ReadString('\n')
 	position = strings.TrimSpace(position)
 
-	passwordPlainText, err := global.TakeSecureInput("Enter a password: ")
+	passwordPlainText, err := global.TakeSignUpPassword("Enter a password: ")
 	if err != nil {
 		fmt.Println("An error occured during input reading", err)
 		return err

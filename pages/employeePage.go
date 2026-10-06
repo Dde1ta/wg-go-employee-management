@@ -44,7 +44,7 @@ func EmployeePage() error {
 
 			var newData string
 			if field == "password" {
-				plainText, err := global.TakeSecureInput("Enter new password: ")
+				plainText, err := global.TakeSignUpPassword("Enter new password: ")
 				if err != nil {
 					fmt.Println("Error reading input:", err)
 					continue

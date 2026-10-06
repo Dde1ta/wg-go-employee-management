@@ -17,7 +17,7 @@ func LoginPage() error {
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 
-	passwordPlainText, err := global.TakeSecureInput("Enter the password: ")
+	passwordPlainText, err := global.TakeLoginPassword("Enter the password: ")
 	if err != nil {
 		fmt.Println("An error occured during input reading", err)
 		return err
