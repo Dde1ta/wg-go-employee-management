@@ -2,11 +2,16 @@
 package pages
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
+
 	"wg.dde1ta/global"
 )
 
 func AdminPage() error {
+	reader := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Println("\n--- Admin Dashboard ---")
 		fmt.Println("1. View All Employees")
@@ -15,8 +20,8 @@ func AdminPage() error {
 		fmt.Println("4. Logout")
 		fmt.Print("Select an option: ")
 
-		var choice string
-		fmt.Scanln(&choice)
+		choice, _ := reader.ReadString('\n')
+		choice = strings.TrimSpace(choice)
 
 		switch choice {
 		case "1":
@@ -30,13 +35,17 @@ func AdminPage() error {
 				fmt.Printf("ID: %s | Name: %s | Email: %s | Dept: %s | Pos: %s\n", emp.Id, emp.Name, emp.Email, emp.Department, emp.Position)
 			}
 		case "2":
-			var id, field, newData string
 			fmt.Print("Enter Employee ID: ")
-			fmt.Scanln(&id)
+			id, _ := reader.ReadString('\n')
+			id = strings.TrimSpace(id)
+
 			fmt.Print("Enter field to update (department/position): ")
-			fmt.Scanln(&field)
+			field, _ := reader.ReadString('\n')
+			field = strings.TrimSpace(field)
+
 			fmt.Print("Enter new value: ")
-			fmt.Scanln(&newData)
+			newData, _ := reader.ReadString('\n')
+			newData = strings.TrimSpace(newData)
 
 			err := admin.UpdateEmployeeDetails(id, newData, field)
 			if err != nil {
@@ -45,10 +54,10 @@ func AdminPage() error {
 				fmt.Println("Employee updated successfully.")
 			}
 		case "3":
-			var id string
 			fmt.Print("Enter Employee ID to delete: ")
-			fmt.Scanln(&id)
-			
+			id, _ := reader.ReadString('\n')
+			id = strings.TrimSpace(id)
+
 			err := admin.DeleteEmployee(id)
 			if err != nil {
 				fmt.Println("Deletion failed:", err)

@@ -2,18 +2,22 @@
 package pages
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
+
 	"wg.dde1ta/global"
 )
 
 func LoginPage() error {
-	var email string
+	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter the email: ")
-	fmt.Scanln(&email)
+	email, _ := reader.ReadString('\n')
+	email = strings.TrimSpace(email)
 
 	passwordPlainText, err := global.TakeSecureInput("Enter the password: ")
-
 	if err != nil {
 		fmt.Println("An error occured during input reading", err)
 		return err

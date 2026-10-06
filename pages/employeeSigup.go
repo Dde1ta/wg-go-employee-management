@@ -2,25 +2,37 @@
 package pages
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
+
 	"wg.dde1ta/global"
 )
 
 func EmployeeSignupPage() error {
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("\n--- Employee Signup ---")
-	
-	var name, email, phone, department, position string
 
 	fmt.Print("Enter Name: ")
-	fmt.Scanln(&name)
+	name, _ := reader.ReadString('\n')
+	name = strings.TrimSpace(name)
+
 	fmt.Print("Enter Email: ")
-	fmt.Scanln(&email)
+	email, _ := reader.ReadString('\n')
+	email = strings.TrimSpace(email)
+
 	fmt.Print("Enter Phone (10 digits): ")
-	fmt.Scanln(&phone)
+	phone, _ := reader.ReadString('\n')
+	phone = strings.TrimSpace(phone)
+
 	fmt.Print("Enter Department: ")
-	fmt.Scanln(&department)
+	department, _ := reader.ReadString('\n')
+	department = strings.TrimSpace(department)
+
 	fmt.Print("Enter Position: ")
-	fmt.Scanln(&position)
+	position, _ := reader.ReadString('\n')
+	position = strings.TrimSpace(position)
 
 	passwordPlainText, err := global.TakeSecureInput("Enter a password: ")
 	if err != nil {

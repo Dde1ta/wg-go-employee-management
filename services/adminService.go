@@ -86,3 +86,18 @@ func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {
 
 	return employees, nil
 }
+
+func (auth *AuthService) AdminExists() (bool, error) {
+	users, err := auth.usersRepo.GetUsers()
+	if err != nil {
+		return false, nil
+	}
+
+	for _, user := range users {
+		if user.GetRole() == "admin" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

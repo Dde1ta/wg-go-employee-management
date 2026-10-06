@@ -176,8 +176,6 @@ func (ER *EmployeeRepo) GetIdByEmail(email string) (string, error) {
 }
 
 func (ER *EmployeeRepo) saveToDB(array []entity.User) error {
-	fmt.Println("Debug: Saving", array)
-
 	toSave, err := json.Marshal(array)
 
 	if err != nil {

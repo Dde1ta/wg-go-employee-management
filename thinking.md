@@ -24,25 +24,6 @@ This is the initial stucture for a simple employee management system json file.
         "password_hashed": "string"
     },
 ]
-// logs.json
-
-[
-    {
-        "session": "string",
-        "principal": {
-            "role": "admin | employee",
-            "id" : "string"
-        },
-        "logged_in":  "timestamp",        
-        "actions": [
-            {
-                "effect": "LOGIN | SIGUP | UPDATE | CREATE | DELETE",
-                "resource": "str",
-                "acted_at": "timestamp"                    
-            }
-        ]
-    }
-]
 
 ```
 

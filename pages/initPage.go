@@ -1,31 +1,42 @@
+// initPage.go
 package pages
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
+
 	"wg.dde1ta/global"
 )
 
 func InitPage() error {
-	var email string;
+	exists, _ := auth.AdminExists()
+	if exists {
+		fmt.Println("An Admin user already exists. System setup is already complete.")
+		return fmt.Errorf("admin already exists")
+	}
 
-	fmt.Println("Enter the email: ")
-	fmt.Scanln(&email)
+	fmt.Println("\n--- System Setup ---")
+	fmt.Println("No Admin user found. Create the first Admin.")
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter the email: ")
+	email, _ := reader.ReadString('\n')
+	email = strings.TrimSpace(email)
 
 	passwordPlainText, err := global.TakeSecureInput("Enter the password: ")
-
 	if err != nil {
 		fmt.Println("An error occured during input reading", err)
 		return err
 	}
 
 	passwordHashed, err := global.HashPassword(passwordPlainText)
-
 	if err != nil {
 		fmt.Println("An error occured during hashing", err)
 	}
 
 	id, err := auth.CreateAdmin(email, passwordHashed)
-
 	if err != nil {
 		fmt.Println("An error occured during signup", err)
 		return err

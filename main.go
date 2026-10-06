@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-
 	"wg.dde1ta/pages"
 )
 
@@ -39,7 +37,7 @@ func main() {
 			}
 		case "4":
 			fmt.Println("Exiting system. Goodbye!")
-			os.Exit(0)
+			return
 		default:
 			fmt.Println("Invalid choice, please try again.")
 		}

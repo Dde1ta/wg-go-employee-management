@@ -2,11 +2,16 @@
 package pages
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
+
 	"wg.dde1ta/global"
 )
 
 func EmployeePage() error {
+	reader := bufio.NewReader(os.Stdin)
 	for {
 		session, ok := global.GetGlobalSession()
 		if !ok {
@@ -19,8 +24,8 @@ func EmployeePage() error {
 		fmt.Println("3. Logout")
 		fmt.Print("Select an option: ")
 
-		var choice string
-		fmt.Scanln(&choice)
+		choice, _ := reader.ReadString('\n')
+		choice = strings.TrimSpace(choice)
 
 		switch choice {
 		case "1":
@@ -30,13 +35,14 @@ func EmployeePage() error {
 				continue
 			}
 			fmt.Println("\n--- My Profile ---")
-			fmt.Printf("ID: %s\nName: %s\nEmail: %s\nPhone: %s\nDepartment: %s\nPosition: %s\n", 
+			fmt.Printf("ID: %s\nName: %s\nEmail: %s\nPhone: %s\nDepartment: %s\nPosition: %s\n",
 				emp.Id, emp.Name, emp.Email, emp.Phone, emp.Department, emp.Position)
 		case "2":
-			var field, newData string
 			fmt.Print("Enter field to update (name/email/contact_number/password): ")
-			fmt.Scanln(&field)
+			field, _ := reader.ReadString('\n')
+			field = strings.TrimSpace(field)
 
+			var newData string
 			if field == "password" {
 				plainText, err := global.TakeSecureInput("Enter new password: ")
 				if err != nil {
@@ -46,7 +52,8 @@ func EmployeePage() error {
 				newData, _ = global.HashPassword(plainText)
 			} else {
 				fmt.Print("Enter new value: ")
-				fmt.Scanln(&newData)
+				newDataRaw, _ := reader.ReadString('\n')
+				newData = strings.TrimSpace(newDataRaw)
 			}
 
 			err := employee.UpdateEmployeeDetails(session.UserId, newData, field)

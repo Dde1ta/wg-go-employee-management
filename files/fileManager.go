@@ -29,6 +29,14 @@ func (file FileManager) Read() (string, error) {
 	var fileContentByte []byte
 	fileContentByte, err = os.ReadFile(file.filePath)
 	if err != nil {
+		if os.IsNotExist(err) {
+			emptyDB := "[]"
+			err = os.WriteFile(file.filePath, []byte(emptyDB), 0644)
+			if err != nil {
+				return "", err
+			}
+			return emptyDB, nil
+		}
 		return "", err
 	}
 
