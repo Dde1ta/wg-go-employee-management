@@ -9,7 +9,23 @@ import (
 	"golang.org/x/term"
 )
 
-func TakeSecureInput(prompt string) (string, error) {
+func TakeLoginPassword(prompt string) (string, error) {
+	var password string
+
+	fmt.Print(prompt)
+
+	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		fmt.Printf("\nError reading password: %v\n", err)
+		return "", nil
+	}
+
+	password = string(bytePassword)
+
+	return password, nil
+}
+
+func TakeSignUpPassword(prompt string) (string, error) {
 	var password string
 
 	fmt.Print(prompt)
