@@ -36,12 +36,12 @@ func InitPage() error {
 		fmt.Println("An error occured during hashing", err)
 	}
 
-	id, err := auth.CreateAdmin(email, passwordHashed)
+	err = auth.CreateAdmin(email, passwordHashed)
 	if err != nil {
 		fmt.Println("An error occured during signup", err)
 		return err
 	}
 
-	fmt.Println("Created New Admin with id:", id, "Please Proceed to login")
+	fmt.Println("Created New Admin. Please Proceed to login")
 	return nil
 }

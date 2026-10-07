@@ -29,7 +29,7 @@ func EmployeePage() error {
 
 		switch choice {
 		case "1":
-			emp, err := employee.GetEmployeeById(session.UserId)
+			emp, err := employee.GetEmployeeByEmail(session.UserEmail)
 			if err != nil {
 				fmt.Println("Error loading profile:", err)
 				continue
@@ -55,7 +55,7 @@ func EmployeePage() error {
 				newData = strings.TrimSpace(newDataRaw)
 			}
 
-			err := employee.UpdateEmployeeDetails(session.UserId, newData, field)
+			err := employee.UpdateEmployeeDetails(session.UserEmail, newData, field)
 			if err != nil {
 				fmt.Println("Update failed:", err)
 			} else {
