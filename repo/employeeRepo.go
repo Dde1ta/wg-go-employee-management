@@ -9,6 +9,7 @@ import (
 
 type EmployeeRepo struct {
 	repo
+	UsersReadOnlyRepo
 }
 
 func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
@@ -17,26 +18,29 @@ func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
 	}
 }
 
-
-func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) (string, error) {
+func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) (error) {
 	newEmployeeObj, err := entity.NewEmployee(
 		name, email, password, phone, department, position,
 	)
 
 	if err != nil {
-		return "", err
+		return err
+	}
+
+	isUnique, err := ER.IsUniqueEmail(email)
+
+	if err != nil {
+		return err
+	}
+
+	if !isUnique {
+		return fmt.Errorf("%s email is already in use", email)
 	}
 
 	users, err := ER.getUsers()
 
 	if err != nil {
-		return "", err
-	}
-
-	for _, values := range users{
-		if values.GetEmail() == email {
-			return "", fmt.Errorf("Email %s is not unique", email)
-		}
+		return err
 	}
 
 	users = append(users, newEmployeeObj)
@@ -44,13 +48,33 @@ func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department,
 	err = ER.saveToDB(users)
 
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return newEmployeeObj.Id, nil
+	return nil
 }
 
-func (ER *EmployeeRepo) UpdateEmployee(id string, newData string, field string) error {
+func (ER *EmployeeRepo) GetEmployeeByEmail(email string) (*entity.Employee, error) {
+	users, err := ER.getUsers()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, user := range users {
+		userEmail, _ := user.GetProperty("email")
+		userRole, _ := user.GetProperty("role")
+		if email == userEmail.ToString() && userRole.ToString() == "employee"{
+			if emp, ok := user.(*entity.Employee); ok { 
+				return emp, nil
+			 }
+		}
+	}
+
+	return nil, fmt.Errorf("Employee with email: %s not found", email)
+}
+
+func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field string) error {
 	/**
 	Valid Fields := Name, Email, Password, Contact Number
 	*/
@@ -64,98 +88,68 @@ func (ER *EmployeeRepo) UpdateEmployee(id string, newData string, field string) 
 	var employeeToUpdate *entity.Employee = nil
 	var employeeIndex int = 0;
 
-	for idx, value := range users {
-		
-		if id == value.GetId() && value.GetRole() == "employee" {
-			employeeIndex = idx
-			emp, ok := value.(entity.Employee)
-			if ok {
-				employeeToUpdate = &emp
-			}
-			break
-		}
-	}
 
-	if employeeToUpdate == nil {
-		return fmt.Errorf("Employee with Id %s does not exist", id)
-	}
-
-	switch field {
-	case "name":
-		employeeToUpdate.Name = newData
-	case "email":
-		employeeToUpdate.Email = newData
-	case "contact_number":
-		employeeToUpdate.Phone = newData
-	case "password":
-		employeeToUpdate.PasswordHashed = newData
-	case "position":
-		employeeToUpdate.Position = newData
-	case "department":
-		employeeToUpdate.Department = newData
-	default:
-		return fmt.Errorf("Invalid Field %s Valid fields are name, email, contact_number, password", field)
-	}
-	if employeeToUpdate.Validate() != nil {
-		return fmt.Errorf("Incorrect Format for field %s, value %s is invalid", field, newData)
-	}
-
-	users[employeeIndex] = *employeeToUpdate
-
-	return ER.saveToDB(users)
-}
-
-func (ER *EmployeeRepo) GetById(id string) (*entity.Employee, error) {
-	users, err := ER.getUsers()
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, value := range users {
-		if id == value.GetId() {
-			if emp, ok := value.(entity.Employee); ok { 
-				return &emp, nil
+	for idx, user := range users {
+		userEmail, _ := user.GetProperty("email")
+		userRole, _ := user.GetProperty("role")
+		if email == userEmail.ToString() && userRole.ToString() == "employee"{
+			if emp, ok := user.(*entity.Employee); ok { 
+				employeeToUpdate = emp
+				employeeIndex = idx
 			 }
 		}
 	}
 
-	return nil, fmt.Errorf("Employee with id: %s not found", id)
+	if employeeToUpdate == nil {
+		return fmt.Errorf("Employee with email %s Not Found", email)
+	}
+
+	switch field {
+	case "email":
+		ok, err := ER.IsUniqueEmail(newData)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			return fmt.Errorf("Email %s is already in use", newData)
+		}
+	case "phone":
+		ok, err := ER.IsUniqueContact(newData)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			return fmt.Errorf("Phone %s is already in use", newData)
+		}
+	}
+
+	var value entity.MyString;
+	value.CopyString(newData)
+
+	employeeToUpdate.SetProperty(field, &value)
+	
+	users[employeeIndex] = employeeToUpdate
+
+	return ER.saveToDB(users)
 }
 
-func (ER *EmployeeRepo) DeleteEmployee(id string) error {
+func (ER *EmployeeRepo) DeleteEmployee(email string) error {
 	users, err := ER.getUsers()
 
 	if err != nil {
 		return err
 	}
 
-	for idx, value := range users {
-		if id == value.GetId() && value.GetRole() == "employee"{
+	for idx, user := range users {
+		userEmail, _ := user.GetProperty("email")
+		userRole, _ := user.GetProperty("role")
+		if userEmail.ToString() == email && userRole.ToString() == "employee"{
 			users = slices.Delete(users, idx, idx + 1)
 			break
 		}
 	}
 
 	return ER.saveToDB(users)
-}
-
-func (ER *EmployeeRepo) GetIdByEmail(email string) (string, error) {
-	users, err := ER.getUsers()
-
-	if err != nil {
-		return "nil", err
-	}
-
-	for _, value := range users {
-		if email == value.GetEmail() {
-			if emp, ok := value.(entity.Employee); ok { 
-				return emp.Id, nil
-			 }
-		}
-	}
-
-	return "", fmt.Errorf("Employee with email: %s not found", email)
 }
 
 func (ER *EmployeeRepo) GetAllEmployees() ([]entity.Employee, error) {
@@ -167,9 +161,12 @@ func (ER *EmployeeRepo) GetAllEmployees() ([]entity.Employee, error) {
 
 	var employeeList []entity.Employee
 
-	for _, value := range users {
-		if value.GetRole() == "employee" {
-			employeeList = append(employeeList, value.(entity.Employee))
+	for _, user := range users {
+		userRole, _ := user.GetProperty("role")
+		if userRole.ToString() == "employee"{
+			if emp, ok := user.(*entity.Employee); ok { 
+				employeeList = append(employeeList, *emp)
+			 }
 		}
 	}
 
