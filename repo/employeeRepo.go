@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"encoding/json"
 	"fmt"
 	"slices"
 	"wg.dde1ta/db"
@@ -9,7 +8,7 @@ import (
 )
 
 type EmployeeRepo struct {
-	db db.DB
+	repo
 }
 
 func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
@@ -18,22 +17,6 @@ func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
 	}
 }
 
-func (ER *EmployeeRepo) getUsers() ([]entity.User, error) {
-
-	wapperArray, err := ER.db.GetDB()
-
-	if err != nil {
-		return nil, err
-	}
-
-	var userSlice []entity.User = make([]entity.User, len(wapperArray))
-
-	for idx, value := range wapperArray {
-		userSlice[idx] = value.User
-	}
-
-	return userSlice, nil
-}
 
 func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) (string, error) {
 	newEmployeeObj, err := entity.NewEmployee(
@@ -175,14 +158,20 @@ func (ER *EmployeeRepo) GetIdByEmail(email string) (string, error) {
 	return "", fmt.Errorf("Employee with email: %s not found", email)
 }
 
-func (ER *EmployeeRepo) saveToDB(array []entity.User) error {
-	toSave, err := json.Marshal(array)
-
+func (ER *EmployeeRepo) GetAllEmployees() ([]entity.Employee, error) {
+	users, err := ER.getUsers()
+	
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = ER.db.SaveToDB(string(toSave))
+	var employeeList []entity.Employee
 
-	return err
-}
+	for _, value := range users {
+		if value.GetRole() == "employee" {
+			employeeList = append(employeeList, value.(entity.Employee))
+		}
+	}
+
+	return employeeList, nil
+} 

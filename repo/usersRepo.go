@@ -8,7 +8,7 @@ import (
 )
 
 type UsersReadOnlyRepo struct {
-	db db.DB
+	repo
 }
 
 func NewUsersRepo(dbFilePath string) *UsersReadOnlyRepo {
@@ -18,7 +18,7 @@ func NewUsersRepo(dbFilePath string) *UsersReadOnlyRepo {
 }
 
 func (UR *UsersReadOnlyRepo) GetById(id string) (entity.User, error) {
-	users, err := UR.GetUsers()
+	users, err := UR.getUsers()
 
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (UR *UsersReadOnlyRepo) GetById(id string) (entity.User, error) {
 }
 
 func (UR *UsersReadOnlyRepo) GetIdByEmail(email string) (string, error) {
-	users, err := UR.GetUsers()
+	users, err := UR.getUsers()
 
 	if err != nil {
 		return "nil", err
@@ -50,19 +50,34 @@ func (UR *UsersReadOnlyRepo) GetIdByEmail(email string) (string, error) {
 	return "", fmt.Errorf("User with email: %s not found", email)
 }
 
-func (UR *UsersReadOnlyRepo) GetUsers() ([]entity.User, error) {
-
-	wapperArray, err := UR.db.GetDB()
+func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (bool, error) {
+	users, err := UR.getUsers()
 
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
-	var userSlice []entity.User = make([]entity.User, len(wapperArray))
-
-	for idx, value := range wapperArray {
-		userSlice[idx] = value.User
+	for _, user := range users {
+		if user.GetEmail() == email{
+			return false, nil
+		}
 	}
 
-	return userSlice, nil
+	return true, nil
+}
+
+func (UR *UsersReadOnlyRepo) IsUniquePhone(phone string) (bool, error) {
+	users, err := UR.getUsers()
+
+	if err != nil {
+		return false, err
+	}
+
+	for _, user := range users {
+		if user.GetEmail() == phone{
+			return false, nil
+		}
+	}
+
+	return true, nil
 }

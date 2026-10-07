@@ -1,14 +1,13 @@
 package repo
 
 import (
-	"encoding/json"
 	"fmt"
 	"wg.dde1ta/db"
 	"wg.dde1ta/entity"
 )
 
 type AdminRepo struct {
-	db db.DB
+	repo
 }
 
 func NewAdminRepo(dbFilePath string) *AdminRepo {
@@ -17,36 +16,7 @@ func NewAdminRepo(dbFilePath string) *AdminRepo {
 	}
 }
 
-func (AR *AdminRepo) getUsers() ([]entity.User, error) {
-
-	wapperArray, err := AR.db.GetDB()
-
-	if err != nil {
-		return nil, err
-	}
-
-	var userSlice []entity.User = make([]entity.User, len(wapperArray))
-
-	for idx, value := range wapperArray {
-		userSlice[idx] = value.User
-	}
-
-	return userSlice, nil
-}
-
-func (AR *AdminRepo) saveToDB(array []entity.User) error {
-	toSave, err := json.Marshal(array)
-
-	if err != nil {
-		return err
-	}
-
-	err = AR.db.SaveToDB(string(toSave))
-
-	return err
-}
-
-func (ER *AdminRepo) CreateAdmin(email, password string) (string, error) {
+func (AR *AdminRepo) CreateAdmin(email, password string) (string, error) {
 	newAdminObj, err := entity.NewAdmin(
 		email, password,
 	)
@@ -55,7 +25,7 @@ func (ER *AdminRepo) CreateAdmin(email, password string) (string, error) {
 		return "", err
 	}
 
-	users, err := ER.getUsers()
+	users, err := AR.getUsers()
 
 	if err != nil {
 		return "", err
@@ -69,7 +39,7 @@ func (ER *AdminRepo) CreateAdmin(email, password string) (string, error) {
 
 	users = append(users, newAdminObj)
 
-	err = ER.saveToDB(users)
+	err = AR.saveToDB(users)
 
 	if err != nil {
 		return "", err
@@ -78,8 +48,8 @@ func (ER *AdminRepo) CreateAdmin(email, password string) (string, error) {
 	return newAdminObj.Id, nil
 }
 
-func (ER *AdminRepo) GetById(id string) (*entity.Admin, error) {
-	users, err := ER.getUsers()
+func (AR *AdminRepo) GetById(id string) (*entity.Admin, error) {
+	users, err := AR.getUsers()
 
 	if err != nil {
 		return nil, err
@@ -96,8 +66,8 @@ func (ER *AdminRepo) GetById(id string) (*entity.Admin, error) {
 	return nil, fmt.Errorf("Admin with id: %s not found", id)
 }
 
-func (ER *AdminRepo) GetIdByEmail(email string) (string, error) {
-	users, err := ER.getUsers()
+func (AR *AdminRepo) GetIdByEmail(email string) (string, error) {
+	users, err := AR.getUsers()
 
 	if err != nil {
 		return "nil", err
@@ -114,12 +84,12 @@ func (ER *AdminRepo) GetIdByEmail(email string) (string, error) {
 	return "", fmt.Errorf("Admin with email: %s not found", email)
 }
 
-func (ER *AdminRepo) UpdateAdmin(id string, newData string, field string) error {
+func (AR *AdminRepo) UpdateAdmin(id string, newData string, field string) error {
 	/**
 	Valid Fields := Name, Email, Password, Contact Number
 	*/
 
-	users, err := ER.getUsers()
+	users, err := AR.getUsers()
 
 	if err != nil {
 		return err
@@ -158,5 +128,23 @@ func (ER *AdminRepo) UpdateAdmin(id string, newData string, field string) error 
 
 	users[AdminIndex] = *AdminToUpdate
 
-	return ER.saveToDB(users)
+	return AR.saveToDB(users)
+}
+
+func (AR *AdminRepo) GetAllAdmins() ([]entity.Admin, error) {
+	users, err := AR.getUsers()
+	
+	if err != nil {
+		return nil, err
+	}
+
+	var adminList []entity.Admin = nil
+
+	for _, value := range users {
+		if value.GetRole() == "employee" {
+			adminList = append(adminList, value.(entity.Admin))
+		}
+	}
+
+	return adminList, nil
 }
