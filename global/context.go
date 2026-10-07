@@ -13,10 +13,14 @@ type SessionContext struct {
 }
 
 func NewSessionContext(user entity.User) SessionContext{
+	idS, _ := user.GetProperty("id")
+	roleS, _ := user.GetProperty("role")
+	emailS, _ := user.GetProperty("email")
+
 	globalSessionContext = SessionContext{
-		UserId: user.GetId(),
-		UserRole: user.GetRole(),
-		UserEmail: user.GetEmail(),
+		UserId: idS.ToString(),
+		UserRole: roleS.ToString(),
+		UserEmail: emailS.ToString(),
 	}
 
 	return globalSessionContext

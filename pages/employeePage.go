@@ -35,8 +35,7 @@ func EmployeePage() error {
 				continue
 			}
 			fmt.Println("\n--- My Profile ---")
-			fmt.Printf("ID: %s\nName: %s\nEmail: %s\nPhone: %s\nDepartment: %s\nPosition: %s\n",
-				emp.Id, emp.Name, emp.Email, emp.Phone, emp.Department, emp.Position)
+			fmt.Println(emp)
 		case "2":
 			fmt.Print("Enter field to update (name/email/contact_number/password): ")
 			field, _ := reader.ReadString('\n')

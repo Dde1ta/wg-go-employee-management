@@ -32,7 +32,7 @@ func AdminPage() error {
 			}
 			fmt.Println("\n--- Employee List ---")
 			for _, emp := range employees {
-				fmt.Printf("ID: %s | Name: %s | Email: %s | Dept: %s | Pos: %s\n", emp.Id, emp.Name, emp.Email, emp.Department, emp.Position)
+				fmt.Println(emp)
 			}
 		case "2":
 			fmt.Print("Enter Employee ID: ")

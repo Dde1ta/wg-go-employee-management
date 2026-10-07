@@ -51,13 +51,13 @@ func (uw *UserWrapper) UnmarshalJSON(data []byte) error {
 		if err := json.Unmarshal(data, &emp); err != nil {
 			return err
 		}
-		uw.User = emp
+		uw.User = &emp
 	case "admin":
 		var admin entity.Admin
 		if err := json.Unmarshal(data, &admin); err != nil {
 			return err
 		}
-		uw.User = admin
+		uw.User = &admin
 	default:
 		return fmt.Errorf("unknown user type: %s", discriminator.Role)
 	}

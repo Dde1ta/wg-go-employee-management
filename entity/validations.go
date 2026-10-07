@@ -12,22 +12,6 @@ func GetValidator() *validator.Validate {
 	return myValidator
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // package entity
 
 // import (
