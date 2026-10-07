@@ -2,6 +2,8 @@ package services
 
 import (
 	"errors"
+	"fmt"
+
 	"wg.dde1ta/entity"
 	"wg.dde1ta/global"
 	"wg.dde1ta/repo"
@@ -32,6 +34,7 @@ func (ES *EmployeeService) GetEmployeeByEmail(email string) (*entity.Employee, e
 }
 
 func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (error) {
+	fmt.Printf("DEBUG: Update call %s %s %s", email, newData, field)
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
@@ -42,12 +45,12 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 		if session.UserRole != "admin" {
 			return forbiddenError
 		}
-		return ES.UpdateEmployeeDetails(email, newData, field)
+		return ES.employeeRepo.UpdateEmployee(email, newData, field)
 	}
 
 	if session.UserEmail != email{
 		return forbiddenError
 	}
 
-	return ES.UpdateEmployeeDetails(email, newData, field)
+	return ES.employeeRepo.UpdateEmployee(email, newData, field)
 }

@@ -10,6 +10,12 @@ type repo struct {
 	db db.DB
 }
 
+func NewRepo (dbFilePath string) *repo {
+	return &repo{
+		db: *db.NewDB(dbFilePath),
+	}
+}
+
 func (r *repo) getUsers() ([]entity.User, error) {
 
 	wapperArray, err := r.db.GetDB()

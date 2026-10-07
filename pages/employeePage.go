@@ -37,9 +37,30 @@ func EmployeePage() error {
 			fmt.Println("\n--- My Profile ---")
 			fmt.Println(emp)
 		case "2":
-			fmt.Print("Enter field to update (name/email/contact_number/password): ")
-			field, _ := reader.ReadString('\n')
-			field = strings.TrimSpace(field)
+			fmt.Println("\nSelect field to update:")
+			fmt.Println("1. Name")
+			fmt.Println("2. Email")
+			fmt.Println("3. Contact Number")
+			fmt.Println("4. Password")
+			fmt.Print("Enter choice (1-4): ")
+
+			fieldChoice, _ := reader.ReadString('\n')
+			fieldChoice = strings.TrimSpace(fieldChoice)
+
+			var field string
+			switch fieldChoice {
+			case "1":
+				field = "name"
+			case "2":
+				field = "email"
+			case "3":
+				field = "contact"
+			case "4":
+				field = "password"
+			default:
+				fmt.Println("Invalid choice, please try again.")
+				continue
+			}
 
 			var newData string
 			if field == "password" {

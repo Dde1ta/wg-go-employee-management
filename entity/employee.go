@@ -47,7 +47,7 @@ func (emp *Employee) ToJson() (string, error) {
 
 func (emp *Employee) GetProperty(property string) (Serializeable, error) {
 
-	var value *MyString
+	var value MyString
 
 	switch property {
 	case "email":
@@ -67,7 +67,7 @@ func (emp *Employee) GetProperty(property string) (Serializeable, error) {
 	default:
 		return nil, fmt.Errorf("The property %s is not valid for an employee", property)
 	}
-	return value, nil
+	return &value, nil
 }
 
 func (emp *Employee) SetProperty(key string, value Serializeable) error {
@@ -99,7 +99,7 @@ func (emp *Employee) SetProperty(key string, value Serializeable) error {
 		return err
 	}
 
-	emp = &empCopy
+	*emp = empCopy
 
 	return nil
 }

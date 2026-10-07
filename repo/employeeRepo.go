@@ -3,7 +3,6 @@ package repo
 import (
 	"fmt"
 	"slices"
-	"wg.dde1ta/db"
 	"wg.dde1ta/entity"
 )
 
@@ -14,7 +13,8 @@ type EmployeeRepo struct {
 
 func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
 	return &EmployeeRepo{
-		db: *db.NewDB(dbFilePath),
+		repo: *NewRepo(dbFilePath),
+		UsersReadOnlyRepo: *NewUsersRepo(dbFilePath),
 	}
 }
 
@@ -113,7 +113,7 @@ func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field strin
 		if !ok {
 			return fmt.Errorf("Email %s is already in use", newData)
 		}
-	case "phone":
+	case "contact":
 		ok, err := ER.IsUniqueContact(newData)
 		if err != nil {
 			return err

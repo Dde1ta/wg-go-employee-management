@@ -1,18 +1,16 @@
 [
   {
-    "id": "01a10bb6-d98b-7e91-aa48-495b2cd479a7",
-    "email": "admin@gmail.com",
+    "email": "1.adm@work.com",
     "role": "admin",
-    "password": "$2a$10$Ee6heN8sgCxF8tmcFqvCquYlvNWnQ.Vi5rBgHy9RwEnTpf1Jx2IsC"
+    "password": "$2a$10$nHkoU1D648miHrYi0MPIAerhXIdBtCqTfHK8FLeo3.vTb9.cMaXYW"
   },
   {
-    "id": "01a10bb8-dca9-7cd4-945f-0cd6c46e4d7d",
-    "name": "worker1",
-    "email": "emp@work.com",
-    "contact_number": "1234543211",
+    "name": "emp1",
+    "email": "1.emp@work.com",
+    "contact_number": "1234567890",
     "role": "employee",
-    "password": "$2a$10$xfzXlB9O70DphT6avD3xoe7V5JaNYvIrwy61tkgZ2rPoaIbeiazdW",
+    "password": "$2a$10$/bAyHbSrmv2ejqYXE3x7RORFxfDWmbhp8i7/40AvRxOsZD6XTn8e.",
     "department": "DevPlat",
-    "position": "intern"
+    "position": "Intern"
   }
 ]

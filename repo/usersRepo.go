@@ -3,7 +3,6 @@ package repo
 
 import (
 	"wg.dde1ta/entity"
-	"wg.dde1ta/db"
 	"fmt"
 )
 
@@ -13,7 +12,7 @@ type UsersReadOnlyRepo struct {
 
 func NewUsersRepo(dbFilePath string) *UsersReadOnlyRepo {
 	return &UsersReadOnlyRepo{
-		db: *db.NewDB(dbFilePath),
+		repo: *NewRepo(dbFilePath),
 	}
 }
 
@@ -53,6 +52,8 @@ func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (bool, error) {
 }
 
 func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (bool, error) {
+	fmt.Println("Debug: Checking Unique Update")
+
 	users, err := UR.getUsers()
 
 	if err != nil {
@@ -61,7 +62,8 @@ func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (bool, error) {
 
 	for _, user := range users {
 		userContact, err := user.GetProperty("contact")
-		if err == nil {
+
+		if err == nil && userContact != nil {
 			if contact == userContact.ToString(){
 				return false, nil
 			}

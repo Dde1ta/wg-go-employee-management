@@ -11,14 +11,27 @@ import (
 )
 
 func InitPage() error {
+
 	exists, _ := auth.AdminExists()
 	if exists {
-		fmt.Println("An Admin user already exists. System setup is already complete.")
-		return fmt.Errorf("admin already exists")
+		fmt.Println("Login as Admin")
+
+		err := LoginSetUp()
+
+		if err != nil {
+			fmt.Println("Error Occured during login")
+			return err
+		}
+
+		session, ok := global.GetGlobalSession()
+
+		if !ok || session.UserRole != "setup" {
+			return fmt.Errorf("login failed")
+		}
 	}
 
-	fmt.Println("\n--- System Setup ---")
-	fmt.Println("No Admin user found. Create the first Admin.")
+	fmt.Println("\n--- Admin Setup ---")
+	fmt.Println("Create the Admin.")
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter the email: ")

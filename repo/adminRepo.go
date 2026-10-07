@@ -2,7 +2,6 @@ package repo
 
 import (
 	"fmt"
-	"wg.dde1ta/db"
 	"wg.dde1ta/entity"
 )
 
@@ -13,7 +12,8 @@ type AdminRepo struct {
 
 func NewAdminRepo(dbFilePath string) *AdminRepo {
 	return &AdminRepo{
-		db: *db.NewDB(dbFilePath),
+		repo: *NewRepo(dbFilePath),
+		UsersReadOnlyRepo: *NewUsersRepo(dbFilePath),
 	}
 }
 

@@ -2,7 +2,7 @@
 .vscode
 
 *.sh
-
+*.txt
 test.txt
 test.txt.lock
 data/

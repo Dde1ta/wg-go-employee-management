@@ -39,7 +39,7 @@ func (adm *Admin) ToJson() (string, error) {
 
 func (adm *Admin) GetProperty(property string) (Serializeable, error) {
 
-	var value *MyString
+	var value MyString;
 
 	switch property {
 	case "email":
@@ -51,7 +51,7 @@ func (adm *Admin) GetProperty(property string) (Serializeable, error) {
 	default:
 		return nil, fmt.Errorf("The property %s is not valid for an admin", property)
 	}
-	return value, nil
+	return &value, nil
 }
 
 func (adm *Admin) Validate() error {
