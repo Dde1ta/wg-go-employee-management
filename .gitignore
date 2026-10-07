@@ -7,3 +7,4 @@ test.txt
 test.txt.lock
 data/
 out/
+data/db.json
