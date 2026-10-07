@@ -25,6 +25,8 @@ func InitPage() error {
 
 		session, ok := global.GetGlobalSession()
 
+		fmt.Println("Debug: ", session, "ok", ok)
+
 		if !ok || session.UserRole != "setup" {
 			return fmt.Errorf("login failed")
 		}

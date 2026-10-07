@@ -30,6 +30,10 @@ func GetGlobalSession() (SessionContext, bool) {
 	return globalSessionContext, true
 }
 
+func SetSetupRole() {
+	globalSessionContext.UserRole = "setup"
+}
+
 func LogOut() {
 	globalSessionContext = SessionContext{}
 }

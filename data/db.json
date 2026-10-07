@@ -1,16 +1,1 @@
-[
-  {
-    "email": "1.adm@work.com",
-    "role": "admin",
-    "password": "$2a$10$nHkoU1D648miHrYi0MPIAerhXIdBtCqTfHK8FLeo3.vTb9.cMaXYW"
-  },
-  {
-    "name": "emp1",
-    "email": "1.emp@work.com",
-    "contact_number": "1234567890",
-    "role": "employee",
-    "password": "$2a$10$/bAyHbSrmv2ejqYXE3x7RORFxfDWmbhp8i7/40AvRxOsZD6XTn8e.",
-    "department": "DevPlat",
-    "position": "Intern"
-  }
-]
+[{"email":"1.adm@work.com","role":"admin","password":"$2a$10$nHkoU1D648miHrYi0MPIAerhXIdBtCqTfHK8FLeo3.vTb9.cMaXYW"},{"name":"emp1","email":"1.emp@work.com","contact_number":"1234567890","role":"employee","password":"$2a$10$/bAyHbSrmv2ejqYXE3x7RORFxfDWmbhp8i7/40AvRxOsZD6XTn8e.","department":"DevPlat","position":"Intern"},{"email":"2.adm@work.com","role":"admin","password":"$2a$10$Uu/i2C4Qv7QbxzMCkMtZ..l6kk6pK0Qw8eHLe2FhUTIZl4hIYcncO"}]
