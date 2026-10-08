@@ -32,16 +32,31 @@ func AdminPage() error {
 			}
 			fmt.Println("\n--- Employee List ---")
 			for _, emp := range employees {
-				fmt.Printf("ID: %s | Name: %s | Email: %s | Dept: %s | Pos: %s\n", emp.Id, emp.Name, emp.Email, emp.Department, emp.Position)
+				fmt.Println(emp.String())
 			}
 		case "2":
-			fmt.Print("Enter Employee ID: ")
+			fmt.Print("Enter Employee email: ")
 			id, _ := reader.ReadString('\n')
 			id = strings.TrimSpace(id)
 
-			fmt.Print("Enter field to update (department/position): ")
-			field, _ := reader.ReadString('\n')
-			field = strings.TrimSpace(field)
+			fmt.Println("\nSelect field to update:")
+			fmt.Println("1. Department")
+			fmt.Println("2. Position")
+			fmt.Print("Enter choice (1-2): ")
+
+			fieldChoice, _ := reader.ReadString('\n')
+			fieldChoice = strings.TrimSpace(fieldChoice)
+
+			var field string
+			switch fieldChoice {
+			case "1":
+				field = "department"
+			case "2":
+				field = "position"
+			default:
+				fmt.Println("Invalid choice, please try again.")
+				continue
+			}
 
 			fmt.Print("Enter new value: ")
 			newData, _ := reader.ReadString('\n')
@@ -54,7 +69,7 @@ func AdminPage() error {
 				fmt.Println("Employee updated successfully.")
 			}
 		case "3":
-			fmt.Print("Enter Employee ID to delete: ")
+			fmt.Print("Enter Employee email to delete: ")
 			id, _ := reader.ReadString('\n')
 			id = strings.TrimSpace(id)
 

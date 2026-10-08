@@ -2,40 +2,32 @@ package entity
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
+	"fmt"
 )
 
 type Admin struct {
-	Id    string          `json:"id" validate:"required"`
-	Email string 		  `json:"email" validate:"required,email"`
-	Role  string 		  `json:"role"`
+	Email          string `json:"email" validate:"required,email"`
+	Role           string `json:"role"`
 	PasswordHashed string `json:"password" validate:"required"`
 }
 
-func NewAdmin(email, password string) (Admin, error) {
-	var newId, err = uuid.NewV7()
-
-	if err != nil {
-		return Admin{}, err
-	}
-
+func NewAdmin(email, hashedPassword string) (*Admin, error) {
 	newAdmin := Admin{
-		Id: newId.String(),
-		Email: email,
-		PasswordHashed: password,
-		Role: "admin",
+		Email:          email,
+		PasswordHashed: hashedPassword,
+		Role:           "admin",
 	}
 
-	err = myValidator.Struct(newAdmin)
+	err := myValidator.Struct(newAdmin)
 
 	if err != nil {
-		return Admin{}, err
+		return nil, err
 	}
-	
-	return newAdmin, nil
+
+	return &newAdmin, nil
 }
 
-func (adm Admin) ToJson() (string, error){
+func (adm *Admin) ToJson() (string, error) {
 	jsonBytes, err := json.Marshal(adm)
 
 	if err != nil {
@@ -45,22 +37,31 @@ func (adm Admin) ToJson() (string, error){
 	return string(jsonBytes), nil
 }
 
-func (adm Admin) GetId() (string) {
-	return adm.Id
+func (adm *Admin) GetProperty(property string) (Serializeable, error) {
+
+	var value MyString;
+
+	switch property {
+	case "email":
+		value.CopyString(adm.Email)
+	case "role":
+		value.CopyString(adm.Role)
+	case "password":
+		value.CopyString(adm.PasswordHashed)
+	default:
+		return nil, fmt.Errorf("The property %s is not valid for an admin", property)
+	}
+	return &value, nil
 }
 
-func (adm Admin) GetRole() (string) {
-	return adm.Role
-}
-
-func (adm Admin) GetEmail() (string) {
-	return adm.Email
-}
-
-func (adm Admin) Validate() (error) {
+func (adm *Admin) Validate() error {
 	return myValidator.Struct(adm)
 }
 
-func (adm Admin) GetPassword() (string){
-	return adm.PasswordHashed
+func (adm *Admin) SetProperty(key string, value Serializeable) error {
+	return fmt.Errorf("Cannot Change Properties of an Admin")
+}
+
+func (adm *Admin) String() string {
+	return fmt.Sprintf("User is an Admin | Email: %s |", adm.Email)
 }

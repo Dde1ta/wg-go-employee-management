@@ -18,64 +18,47 @@ func NewEmployeeService(dbFilePath string) EmployeeService{
 	}
 }
 
-func (ES *EmployeeService) GetEmployeeById(id string) (*entity.Employee, error){
+func (ES *EmployeeService) GetEmployeeByEmail(email string) (*entity.Employee, error){
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
 		return nil, errors.New("You are not logged in / Invalid Session")
 	}
 
-	if session.UserRole == "admin" || session.UserId == id {
-		return ES.employeeRepo.GetById(id)
+	if session.UserRole == "admin" || email == session.UserEmail {
+		return ES.employeeRepo.GetEmployeeByEmail(email)
 	}
 
 	return nil, errors.New("Forbidden action")
 }
 
-func (ES *EmployeeService) GetEmployeeIdByEmail(email string) (string, error){
-	session, ok := global.GetGlobalSession()
-
-	if !ok {
-		return "", notLoggedInError
-	}
-
-	if session.UserRole == "admin" || session.UserEmail == email {
-		return ES.employeeRepo.GetIdByEmail(email)
-	}
-
-	return "", forbiddenError
-}
-
-func (ES *EmployeeService) UpdateEmployeeDetails(id, newData, field string) (error) {
+func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (error) {
+	fmt.Printf("DEBUG: Update call %s %s %s\n", email, newData, field)
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
 		return notLoggedInError
 	}
 
-	switch field{
-	case "name":
-		if session.UserId != id{
+	if field == "department" || field == "position" {
+		if session.UserRole != "admin" {
 			return forbiddenError
 		}
-		return ES.employeeRepo.UpdateEmployee(id, newData, field)
-	case "email":
-		if session.UserId != id{
-			return forbiddenError
-		}
-		return ES.employeeRepo.UpdateEmployee(id, newData, field)
-	case "contact_number":
-		if session.UserId != id{
-			return forbiddenError
-		}
-		return ES.employeeRepo.UpdateEmployee(id, newData, field)
-	case "password":
-		if session.UserId != id{
-			return forbiddenError
-		}
-		return ES.employeeRepo.UpdateEmployee(id, newData, field)
-	default:
-		return fmt.Errorf("Invalid Field %s, Vaild are name, email, contact_number, password", field)
+		return ES.employeeRepo.UpdateEmployee(email, newData, field)
 	}
-}
 
+	if session.UserEmail != email{
+		return forbiddenError
+	}
+	err := ES.employeeRepo.UpdateEmployee(email, newData, field)
+
+	if err != nil {
+		return err
+	}
+
+	if field == "email"{
+		global.UpdateSessionEmail(newData)
+	}
+
+	return nil
+}

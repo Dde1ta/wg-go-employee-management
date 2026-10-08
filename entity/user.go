@@ -1,10 +1,26 @@
 package entity
 
-type User interface{
+import "fmt"
+
+type MyString string
+
+func (s *MyString) ToString() string {
+	return string(*s)
+}
+
+func (s *MyString) CopyString(newS string) {
+	*s = MyString(newS)
+}
+
+type Serializeable interface {
+	ToString() string
+	CopyString(string)
+}
+
+type User interface {
 	ToJson() (string, error)
-	GetId() (string)
-	GetRole() (string)
-	GetEmail() (string)
-	GetPassword() (string)
-	Validate() (error)
+	GetProperty(string) (Serializeable, error)
+	Validate() error
+	SetProperty(string, Serializeable) error
+	fmt.Stringer
 }

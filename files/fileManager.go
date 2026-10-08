@@ -17,7 +17,7 @@ func NewFileManager(filepath string) *FileManager {
 	}
 }
 
-func (file FileManager) Read() (string, error) {
+func (file *FileManager) Read() (string, error) {
 	err := file.LockFile.GetReadLock()
 
 	if err != nil {
@@ -43,7 +43,7 @@ func (file FileManager) Read() (string, error) {
 	return string(fileContentByte), nil
 }
 
-func (file FileManager) Write(content string) error {
+func (file *FileManager) Write(content string) error {
 
 	dir := filepath.Dir(file.filePath)
 	tempFile, err := os.CreateTemp(dir, "db-*.json.tmp")

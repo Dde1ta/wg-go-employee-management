@@ -3,66 +3,72 @@ package repo
 
 import (
 	"wg.dde1ta/entity"
-	"wg.dde1ta/db"
 	"fmt"
 )
 
 type UsersReadOnlyRepo struct {
-	db db.DB
+	repo
 }
 
 func NewUsersRepo(dbFilePath string) *UsersReadOnlyRepo {
 	return &UsersReadOnlyRepo{
-		db: *db.NewDB(dbFilePath),
+		repo: *NewRepo(dbFilePath),
 	}
 }
 
-func (UR *UsersReadOnlyRepo) GetById(id string) (entity.User, error) {
-	users, err := UR.GetUsers()
+
+func (UR *UsersReadOnlyRepo) GetUserByEmail(email string) (*entity.User, error) {
+	users, err := UR.getUsers()
 
 	if err != nil {
 		return nil, err
 	}
 
-	for _, value := range users {
-		if id == value.GetId() {
-			return value, nil
-
+	for _, user := range users {
+		userEmail, _ := user.GetProperty("email")
+		if email == userEmail.ToString(){
+			return &user, nil
 		}
 	}
 
-	return nil, fmt.Errorf("User with id: %s not found", id)
+	return nil, fmt.Errorf("User with email: %s not found", email)
 }
 
-func (UR *UsersReadOnlyRepo) GetIdByEmail(email string) (string, error) {
-	users, err := UR.GetUsers()
+func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (bool, error) {
+	users, err := UR.getUsers()
 
 	if err != nil {
-		return "nil", err
+		return false, err
 	}
 
-	for _, value := range users {
-		if email == value.GetEmail() {
-			return value.GetId(), nil
+	for _, user := range users {
+		userEmail, _ := user.GetProperty("email")
+		if email == userEmail.ToString(){
+			return false, nil
 		}
 	}
 
-	return "", fmt.Errorf("User with email: %s not found", email)
+	return true, nil
 }
 
-func (UR *UsersReadOnlyRepo) GetUsers() ([]entity.User, error) {
+func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (bool, error) {
+	fmt.Println("Debug: Checking Unique Update")
 
-	wapperArray, err := UR.db.GetDB()
+	users, err := UR.getUsers()
 
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
-	var userSlice []entity.User = make([]entity.User, len(wapperArray))
+	for _, user := range users {
+		userContact, err := user.GetProperty("contact")
 
-	for idx, value := range wapperArray {
-		userSlice[idx] = value.User
+		if err == nil && userContact != nil {
+			if contact == userContact.ToString(){
+				return false, nil
+			}
+		}
 	}
 
-	return userSlice, nil
+	return true, nil
 }

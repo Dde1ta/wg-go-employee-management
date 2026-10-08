@@ -29,18 +29,38 @@ func EmployeePage() error {
 
 		switch choice {
 		case "1":
-			emp, err := employee.GetEmployeeById(session.UserId)
+			emp, err := employee.GetEmployeeByEmail(session.UserEmail)
 			if err != nil {
 				fmt.Println("Error loading profile:", err)
 				continue
 			}
 			fmt.Println("\n--- My Profile ---")
-			fmt.Printf("ID: %s\nName: %s\nEmail: %s\nPhone: %s\nDepartment: %s\nPosition: %s\n",
-				emp.Id, emp.Name, emp.Email, emp.Phone, emp.Department, emp.Position)
+			fmt.Println(emp)
 		case "2":
-			fmt.Print("Enter field to update (name/email/contact_number/password): ")
-			field, _ := reader.ReadString('\n')
-			field = strings.TrimSpace(field)
+			fmt.Println("\nSelect field to update:")
+			fmt.Println("1. Name")
+			fmt.Println("2. Email")
+			fmt.Println("3. Contact Number")
+			fmt.Println("4. Password")
+			fmt.Print("Enter choice (1-4): ")
+
+			fieldChoice, _ := reader.ReadString('\n')
+			fieldChoice = strings.TrimSpace(fieldChoice)
+
+			var field string
+			switch fieldChoice {
+			case "1":
+				field = "name"
+			case "2":
+				field = "email"
+			case "3":
+				field = "contact"
+			case "4":
+				field = "password"
+			default:
+				fmt.Println("Invalid choice, please try again.")
+				continue
+			}
 
 			var newData string
 			if field == "password" {
@@ -56,8 +76,13 @@ func EmployeePage() error {
 				newData = strings.TrimSpace(newDataRaw)
 			}
 
-			err := employee.UpdateEmployeeDetails(session.UserId, newData, field)
+			err := employee.UpdateEmployeeDetails(session.UserEmail, newData, field)
 			if err != nil {
+				if err.Error() == "Session Change error"{
+					global.LogOut()
+					fmt.Println("Logged out successfully.")
+					return nil
+				}
 				fmt.Println("Update failed:", err)
 			} else {
 				fmt.Println("Profile updated successfully.")

@@ -5,7 +5,6 @@ go 1.27.1
 require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gofrs/flock v0.13.1 // direct
-	github.com/google/uuid v1.6.0
 	golang.org/x/crypto v0.57.0 // direct
 	golang.org/x/term v0.46.0 // direct
 )

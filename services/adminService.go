@@ -2,10 +2,9 @@ package services
 
 import (
 	"fmt"
-
+	"wg.dde1ta/repo"
 	"wg.dde1ta/entity"
 	"wg.dde1ta/global"
-	"wg.dde1ta/repo"
 )
 
 type AdminService struct {
@@ -70,34 +69,20 @@ func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {
 		return nil, forbiddenError
 	}
 
-	users, err := AS.usersRepo.GetUsers()
+	employees, err := AS.employeeRepo.GetAllEmployees()
 
 	if err != nil {
 		return nil, err
 	}
 
-	var employees []entity.Employee;
-
-	for _, value := range users{
-		if value.GetRole() == "employee" {
-			employees = append(employees, value.(entity.Employee))
-		}
-	}
-
 	return employees, nil
 }
 
-func (auth *AuthService) AdminExists() (bool, error) {
-	users, err := auth.usersRepo.GetUsers()
+func (AS *AdminService) AdminExists() (bool, error) {
+	admins, err := AS.adminRepo.GetAllAdmins()
 	if err != nil {
 		return false, nil
 	}
 
-	for _, user := range users {
-		if user.GetRole() == "admin" {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return admins != nil, nil
 }

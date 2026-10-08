@@ -22,7 +22,7 @@ func EmployeeSignupPage() error {
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 
-	fmt.Print("Enter Phone (10 digits): ")
+	fmt.Print("Enter Phone (+ Country-Code PhoneNumber without spaces !!!): ")
 	phone, _ := reader.ReadString('\n')
 	phone = strings.TrimSpace(phone)
 
@@ -46,12 +46,12 @@ func EmployeeSignupPage() error {
 		return err
 	}
 
-	id, err := auth.SignUpEmployee(name, email, passwordHashed, phone, department, position)
+	err = auth.SignUpEmployee(name, email, passwordHashed, phone, department, position)
 	if err != nil {
 		fmt.Println("Signup failed:", err)
 		return err
 	}
 
-	fmt.Printf("Employee successfully created with ID: %s. Please login.\n", id)
+	fmt.Println("Employee successfully created. Please login.")
 	return nil
 }

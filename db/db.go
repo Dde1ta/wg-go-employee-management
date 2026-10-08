@@ -27,13 +27,6 @@ func NewDB(dbFilePath string) *DB {
 	}
 }
 
-func NewDBBuffered(dbFilePath string, employeeCount int, adminCount int) *DB {
-	return &DB{
-		// Employees: make([]entity.Employee, 0, employeeCount),
-		// Admins: make([]entity.Admin, 0, adminCount),
-		dbFile: NewDBFile(dbFilePath),
-	}
-}
 
 func (uw *UserWrapper) UnmarshalJSON(data []byte) error {
 	// Extract only the "role" field
@@ -51,13 +44,13 @@ func (uw *UserWrapper) UnmarshalJSON(data []byte) error {
 		if err := json.Unmarshal(data, &emp); err != nil {
 			return err
 		}
-		uw.User = emp
+		uw.User = &emp
 	case "admin":
 		var admin entity.Admin
 		if err := json.Unmarshal(data, &admin); err != nil {
 			return err
 		}
-		uw.User = admin
+		uw.User = &admin
 	default:
 		return fmt.Errorf("unknown user type: %s", discriminator.Role)
 	}

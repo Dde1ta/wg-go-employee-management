@@ -11,14 +11,29 @@ import (
 )
 
 func InitPage() error {
-	exists, _ := auth.AdminExists()
+
+	exists, _ := admin.AdminExists()
 	if exists {
-		fmt.Println("An Admin user already exists. System setup is already complete.")
-		return fmt.Errorf("admin already exists")
+		fmt.Println("Login as Admin")
+
+		err := LoginSetUp()
+
+		if err != nil {
+			fmt.Println("Error Occured during login")
+			return err
+		}
+
+		session, ok := global.GetGlobalSession()
+
+		fmt.Println("Debug: ", session, "ok", ok)
+
+		if !ok || session.UserRole != "setup" {
+			return fmt.Errorf("login failed")
+		}
 	}
 
-	fmt.Println("\n--- System Setup ---")
-	fmt.Println("No Admin user found. Create the first Admin.")
+	fmt.Println("\n--- Admin Setup ---")
+	fmt.Println("Create the Admin.")
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter the email: ")
@@ -36,12 +51,12 @@ func InitPage() error {
 		fmt.Println("An error occured during hashing", err)
 	}
 
-	id, err := auth.CreateAdmin(email, passwordHashed)
+	err = auth.CreateAdmin(email, passwordHashed)
 	if err != nil {
 		fmt.Println("An error occured during signup", err)
 		return err
 	}
 
-	fmt.Println("Created New Admin with id:", id, "Please Proceed to login")
+	fmt.Println("Created New Admin. Please Proceed to login")
 	return nil
 }
