@@ -34,6 +34,10 @@ func SetSetupRole() {
 	globalSessionContext.UserRole = "setup"
 }
 
+func UpdateSessionEmail(email string){
+	globalSessionContext.UserEmail = email
+}
+
 func LogOut() {
 	globalSessionContext = SessionContext{}
 }

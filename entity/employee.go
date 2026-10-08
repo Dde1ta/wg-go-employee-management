@@ -8,19 +8,19 @@ import (
 type Employee struct {
 	Name           string `json:"name" validate:"required"`
 	Email          string `json:"email" validate:"required,email"`
-	Phone          string `json:"contact_number" validate:"required,len=10"`
+	Phone          string `json:"contact_number" validate:"required,e164"`
 	Role           string `json:"role"`
 	PasswordHashed string `json:"password" validate:"required"`
 	Department     string `json:"department" validate:"required"`
 	Position       string `json:"position" validate:"required"`
 }
 
-func NewEmployee(name, email, password, phone, department, position string) (*Employee, error) {
+func NewEmployee(name, email, hashedPassword, phone, department, position string) (*Employee, error) {
 	newEmployee := Employee{
 		Name:           name,
 		Email:          email,
 		Phone:          phone,
-		PasswordHashed: password,
+		PasswordHashed: hashedPassword,
 		Department:     department,
 		Position:       position,
 		Role:           "employee",
@@ -77,8 +77,6 @@ func (emp *Employee) SetProperty(key string, value Serializeable) error {
 	switch key {
 	case "email":
 		empCopy.Email = value.ToString()
-	case "role":
-		empCopy.Role = value.ToString()
 	case "password":
 		empCopy.PasswordHashed = value.ToString()
 	case "contact":

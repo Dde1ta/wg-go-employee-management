@@ -27,13 +27,6 @@ func NewDB(dbFilePath string) *DB {
 	}
 }
 
-func NewDBBuffered(dbFilePath string, employeeCount int, adminCount int) *DB {
-	return &DB{
-		// Employees: make([]entity.Employee, 0, employeeCount),
-		// Admins: make([]entity.Admin, 0, adminCount),
-		dbFile: NewDBFile(dbFilePath),
-	}
-}
 
 func (uw *UserWrapper) UnmarshalJSON(data []byte) error {
 	// Extract only the "role" field

@@ -78,8 +78,8 @@ func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {
 	return employees, nil
 }
 
-func (auth *AuthService) AdminExists() (bool, error) {
-	admins, err := auth.adminRepo.GetAllAdmins()
+func (AS *AdminService) AdminExists() (bool, error) {
+	admins, err := AS.adminRepo.GetAllAdmins()
 	if err != nil {
 		return false, nil
 	}

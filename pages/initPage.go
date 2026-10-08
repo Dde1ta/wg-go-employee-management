@@ -12,7 +12,7 @@ import (
 
 func InitPage() error {
 
-	exists, _ := auth.AdminExists()
+	exists, _ := admin.AdminExists()
 	if exists {
 		fmt.Println("Login as Admin")
 

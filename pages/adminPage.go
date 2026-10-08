@@ -35,7 +35,7 @@ func AdminPage() error {
 				fmt.Println(emp.String())
 			}
 		case "2":
-			fmt.Print("Enter Employee ID: ")
+			fmt.Print("Enter Employee email: ")
 			id, _ := reader.ReadString('\n')
 			id = strings.TrimSpace(id)
 
@@ -69,7 +69,7 @@ func AdminPage() error {
 				fmt.Println("Employee updated successfully.")
 			}
 		case "3":
-			fmt.Print("Enter Employee ID to delete: ")
+			fmt.Print("Enter Employee email to delete: ")
 			id, _ := reader.ReadString('\n')
 			id = strings.TrimSpace(id)
 

@@ -78,6 +78,11 @@ func EmployeePage() error {
 
 			err := employee.UpdateEmployeeDetails(session.UserEmail, newData, field)
 			if err != nil {
+				if err.Error() == "Session Change error"{
+					global.LogOut()
+					fmt.Println("Logged out successfully.")
+					return nil
+				}
 				fmt.Println("Update failed:", err)
 			} else {
 				fmt.Println("Profile updated successfully.")

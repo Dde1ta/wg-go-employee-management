@@ -11,10 +11,10 @@ type Admin struct {
 	PasswordHashed string `json:"password" validate:"required"`
 }
 
-func NewAdmin(email, password string) (*Admin, error) {
+func NewAdmin(email, hashedPassword string) (*Admin, error) {
 	newAdmin := Admin{
 		Email:          email,
-		PasswordHashed: password,
+		PasswordHashed: hashedPassword,
 		Role:           "admin",
 	}
 

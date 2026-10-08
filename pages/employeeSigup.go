@@ -22,7 +22,7 @@ func EmployeeSignupPage() error {
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 
-	fmt.Print("Enter Phone (10 digits): ")
+	fmt.Print("Enter Phone (+ Country-Code PhoneNumber without spaces !!!): ")
 	phone, _ := reader.ReadString('\n')
 	phone = strings.TrimSpace(phone)
 
