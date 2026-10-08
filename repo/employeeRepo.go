@@ -3,6 +3,7 @@ package repo
 import (
 	"fmt"
 	"slices"
+
 	"wg.dde1ta/entity"
 )
 
@@ -13,12 +14,12 @@ type EmployeeRepo struct {
 
 func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
 	return &EmployeeRepo{
-		repo: *NewRepo(dbFilePath),
+		repo:              *NewRepo(dbFilePath),
 		UsersReadOnlyRepo: *NewUsersRepo(dbFilePath),
 	}
 }
 
-func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) (error) {
+func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) error {
 	newEmployeeObj, err := entity.NewEmployee(
 		name, email, password, phone, department, position,
 	)
@@ -64,10 +65,10 @@ func (ER *EmployeeRepo) GetEmployeeByEmail(email string) (*entity.Employee, erro
 	for _, user := range users {
 		userEmail, _ := user.GetProperty("email")
 		userRole, _ := user.GetProperty("role")
-		if email == userEmail.ToString() && userRole.ToString() == "employee"{
-			if emp, ok := user.(*entity.Employee); ok { 
+		if email == userEmail.ToString() && userRole.ToString() == "employee" {
+			if emp, ok := user.(*entity.Employee); ok {
 				return emp, nil
-			 }
+			}
 		}
 	}
 
@@ -78,7 +79,7 @@ func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field strin
 	/**
 	Valid Fields := Name, Email, Password, Contact Number
 	*/
-	
+
 	users, err := ER.getUsers()
 
 	if err != nil {
@@ -86,17 +87,16 @@ func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field strin
 	}
 
 	var employeeToUpdate *entity.Employee = nil
-	var employeeIndex int = 0;
-
+	var employeeIndex int = 0
 
 	for idx, user := range users {
 		userEmail, _ := user.GetProperty("email")
 		userRole, _ := user.GetProperty("role")
-		if email == userEmail.ToString() && userRole.ToString() == "employee"{
-			if emp, ok := user.(*entity.Employee); ok { 
+		if email == userEmail.ToString() && userRole.ToString() == "employee" {
+			if emp, ok := user.(*entity.Employee); ok {
 				employeeToUpdate = emp
 				employeeIndex = idx
-			 }
+			}
 		}
 	}
 
@@ -123,11 +123,11 @@ func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field strin
 		}
 	}
 
-	var value entity.MyString;
+	var value entity.MyString
 	value.CopyString(newData)
 
 	employeeToUpdate.SetProperty(field, &value)
-	
+
 	users[employeeIndex] = employeeToUpdate
 
 	return ER.saveToDB(users)
@@ -140,13 +140,20 @@ func (ER *EmployeeRepo) DeleteEmployee(email string) error {
 		return err
 	}
 
+	var foundAndDeleted bool = false
+
 	for idx, user := range users {
 		userEmail, _ := user.GetProperty("email")
 		userRole, _ := user.GetProperty("role")
-		if userEmail.ToString() == email && userRole.ToString() == "employee"{
-			users = slices.Delete(users, idx, idx + 1)
+		if userEmail.ToString() == email && userRole.ToString() == "employee" {
+			users = slices.Delete(users, idx, idx+1)
+			foundAndDeleted = true
 			break
 		}
+	}
+
+	if !foundAndDeleted {
+		return fmt.Errorf("Employe with email %s not found", email)
 	}
 
 	return ER.saveToDB(users)
@@ -154,7 +161,7 @@ func (ER *EmployeeRepo) DeleteEmployee(email string) error {
 
 func (ER *EmployeeRepo) GetAllEmployees() ([]entity.Employee, error) {
 	users, err := ER.getUsers()
-	
+
 	if err != nil {
 		return nil, err
 	}
@@ -163,12 +170,12 @@ func (ER *EmployeeRepo) GetAllEmployees() ([]entity.Employee, error) {
 
 	for _, user := range users {
 		userRole, _ := user.GetProperty("role")
-		if userRole.ToString() == "employee"{
-			if emp, ok := user.(*entity.Employee); ok { 
+		if userRole.ToString() == "employee" {
+			if emp, ok := user.(*entity.Employee); ok {
 				employeeList = append(employeeList, *emp)
-			 }
+			}
 		}
 	}
 
 	return employeeList, nil
-} 
+}
