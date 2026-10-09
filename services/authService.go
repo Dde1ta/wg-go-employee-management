@@ -36,7 +36,7 @@ func (auth *AuthService) CreateAdmin(email, password string) (error) {
 	}
 
 	if session.UserRole != "setup" {
-		slog.Warn("AUTH SERIVCE: Role is not Setup for user", "email=", session.UserEmail)
+		slog.Warn("AUTH SERIVCE: Role is not Setup for user", "email", session.UserEmail)
 		return fmt.Errorf("Forbidden")
 	}
 
@@ -46,7 +46,7 @@ func (auth *AuthService) CreateAdmin(email, password string) (error) {
 		return err
 	}
 
-	slog.Info("AUTH SERIVCE: New admin created", "newAdmin=", email, "principal=", session.UserEmail)
+	slog.Info("AUTH SERIVCE: New admin created", "newAdmin", email, "principal", session.UserEmail)
 	return nil
 }
 
@@ -73,7 +73,7 @@ func (auth *AuthService) Login(email, givenPassword string) (error) {
 
 	global.NewSessionContext(userCopy)
 
-	slog.Info("AUTH SERIVCE: Login by", "userEmail=", email)
+	slog.Info("AUTH SERIVCE: Login by", "userEmail", email)
 
 	return nil
 }

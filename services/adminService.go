@@ -23,7 +23,7 @@ func NewAdminService(dbFilePath string) AdminService{
 	}
 }
 
-func (AS *AdminService) UpdateEmployeeDetails(id, newData, field string) error {
+func (AS *AdminService) UpdateEmployeeDetails(email, newData, field string) error {
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
@@ -33,23 +33,28 @@ func (AS *AdminService) UpdateEmployeeDetails(id, newData, field string) error {
 	switch field {
 	case "department":
 		if session.UserRole != "admin" {
-			slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
+			slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email", session.UserEmail)
 			return forbiddenError
 		}
-		return AS.employeeRepo.UpdateEmployee(id, newData, field)
+		return AS.employeeRepo.UpdateEmployee(email, newData, field)
 	case "position":
 		if session.UserRole != "admin" {
-			slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
+			slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email", session.UserEmail)
 			return forbiddenError
 		}
-		return AS.employeeRepo.UpdateEmployee(id, newData, field)
+		err := AS.employeeRepo.UpdateEmployee(email, newData, field)
+
+		if err == nil {
+			slog.Info("EMPLOYEE SERIVCE: Employee data updated", "effected", email, "field", field ,"new", newData, "principal", session.UserEmail)
+		}
+		return err
 	default:
-		slog.Error("ADMIN SERIVCE: Invalid field", "field=", field, "email=", session.UserEmail)
-		return fmt.Errorf("Invalid Field %s, Vaild are position, department", field)
+		slog.Error("ADMIN SERIVCE: Invalemail field", "field", field, "email", session.UserEmail)
+		return fmt.Errorf("Invalemail Field %s, Vaild are position, department", field)
 	}
 }
 
-func (AS *AdminService) DeleteEmployee(id string) error {
+func (AS *AdminService) DeleteEmployee(email string) error {
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
@@ -57,11 +62,17 @@ func (AS *AdminService) DeleteEmployee(id string) error {
 	}
 
 	if session.UserRole != "admin" {
-		slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
+		slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email", session.UserEmail)
 		return forbiddenError
 	}
 
-	return AS.employeeRepo.DeleteEmployee(id)
+	err := AS.employeeRepo.DeleteEmployee(email)
+
+	if err == nil {
+		slog.Info("ADMIN SERIVCE: Employee deleted", "effected", email, "principal", session.UserEmail)
+	}
+
+	return err
 }
 
 func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {
@@ -72,7 +83,7 @@ func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {
 	}
 
 	if session.UserRole != "admin" {
-		slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
+		slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email", session.UserEmail)
 		return nil, forbiddenError
 	}
 

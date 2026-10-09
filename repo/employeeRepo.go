@@ -75,6 +75,8 @@ func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department,
 		return err
 	}
 
+	slog.Info("EMPLOYEE REPO: New Employee created: ", "email", email, "name", name)
+
 	return nil
 }
 

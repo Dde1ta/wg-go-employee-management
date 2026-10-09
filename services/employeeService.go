@@ -43,7 +43,7 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 
 	if field == "department" || field == "position" {
 		if session.UserRole != "admin" {
-			slog.Warn("EMPLOYEE SERIVCE: forbidden request to update", "email=", session.UserEmail, "field=", field)
+			slog.Warn("EMPLOYEE SERIVCE: forbidden request to update (Not Admin)", "affected=", email, "field=", field, "principal=", session.UserEmail)
 			return forbiddenError
 		}
 		return ES.employeeRepo.UpdateEmployee(email, newData, field)
@@ -63,6 +63,7 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 		global.UpdateSessionEmail(newData)
 		slog.Info("EMPLOYEE SERIVCE: Session updated", "previous=", email, "new=", newData)
 	}
+	slog.Info("EMPLOYEE SERIVCE: Employee data updated", "effected=", email, "field=", field ,"new=", newData, "principal=", session.UserEmail)
 
 	return nil
 }
