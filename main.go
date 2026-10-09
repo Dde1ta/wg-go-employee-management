@@ -43,6 +43,7 @@ func main() {
 
 	fmt.Println("Welcome to the Employee Management System")
 
+mainLoop:
 	for {
 		fmt.Println("\n--- Main Menu ---")
 		fmt.Println("1. Login")
@@ -72,7 +73,7 @@ func main() {
 			}
 		case "4":
 			fmt.Println("Exiting system. Goodbye!")
-			return
+			break mainLoop
 		default:
 			fmt.Println("Invalid choice, please try again.")
 		}
