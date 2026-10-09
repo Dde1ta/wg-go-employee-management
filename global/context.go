@@ -4,19 +4,19 @@ import (
 	"wg.dde1ta/entity"
 )
 
-var globalSessionContext SessionContext;
+var globalSessionContext SessionContext
 
 type SessionContext struct {
-	UserRole string
+	UserRole  string
 	UserEmail string
 }
 
-func NewSessionContext(user entity.User) SessionContext{
+func NewSessionContext(user entity.User) SessionContext {
 	roleS, _ := user.GetProperty("role")
 	emailS, _ := user.GetProperty("email")
 
 	globalSessionContext = SessionContext{
-		UserRole: roleS.ToString(),
+		UserRole:  roleS.ToString(),
 		UserEmail: emailS.ToString(),
 	}
 
@@ -24,7 +24,7 @@ func NewSessionContext(user entity.User) SessionContext{
 }
 
 func GetGlobalSession() (SessionContext, bool) {
-	if globalSessionContext == (SessionContext{}){
+	if globalSessionContext == (SessionContext{}) {
 		return SessionContext{}, false
 	}
 	return globalSessionContext, true
@@ -34,7 +34,7 @@ func SetSetupRole() {
 	globalSessionContext.UserRole = "setup"
 }
 
-func UpdateSessionEmail(email string){
+func UpdateSessionEmail(email string) {
 	globalSessionContext.UserEmail = email
 }
 

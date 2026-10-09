@@ -46,7 +46,6 @@ func LoginPage() error {
 	}
 }
 
-
 func LoginSetUp() error {
 	reader := bufio.NewReader(os.Stdin)
 
@@ -70,12 +69,11 @@ func LoginSetUp() error {
 	if !ok {
 		return fmt.Errorf("failed to load session")
 	}
-	
+
 	global.SetSetupRole()
 
 	fmt.Printf("\nWelcome %s! Logged in as %s\n", session.UserEmail, session.UserRole)
 
-
 	return nil
-	
+
 }

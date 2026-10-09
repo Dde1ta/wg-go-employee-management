@@ -1,10 +1,9 @@
 package repo
 
-
 import (
-	"wg.dde1ta/entity"
 	"log/slog"
 	"runtime/debug"
+	"wg.dde1ta/entity"
 
 	"fmt"
 )
@@ -18,7 +17,6 @@ func NewUsersRepo(dbFilePath string) *UsersReadOnlyRepo {
 		repo: *NewRepo(dbFilePath),
 	}
 }
-
 
 func (UR *UsersReadOnlyRepo) GetUserByEmail(email string) (user *entity.User, err error) {
 	defer func() {
@@ -41,7 +39,7 @@ func (UR *UsersReadOnlyRepo) GetUserByEmail(email string) (user *entity.User, er
 
 	for _, user := range users {
 		userEmail, _ := user.GetProperty("email")
-		if email == userEmail.ToString(){
+		if email == userEmail.ToString() {
 			return &user, nil
 		}
 	}
@@ -69,7 +67,7 @@ func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (ok bool, err error) {
 
 	for _, user := range users {
 		userEmail, _ := user.GetProperty("email")
-		if email == userEmail.ToString(){
+		if email == userEmail.ToString() {
 			return false, nil
 		}
 	}
@@ -89,7 +87,7 @@ func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (ok bool, err error
 			err = fmt.Errorf("Unexcepted err see logs")
 		}
 	}()
-	
+
 	fmt.Println("Debug: Checking Unique Update")
 
 	users, err := UR.getUsers()
@@ -102,7 +100,7 @@ func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (ok bool, err error
 		userContact, err := user.GetProperty("contact")
 
 		if err == nil && userContact != nil {
-			if contact == userContact.ToString(){
+			if contact == userContact.ToString() {
 				return false, nil
 			}
 		}

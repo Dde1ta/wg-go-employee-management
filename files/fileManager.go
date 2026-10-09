@@ -55,7 +55,7 @@ func (file *FileManager) Write(content string) error {
 	defer os.Remove(tempPath)
 
 	_, err = tempFile.WriteString(content)
-	
+
 	tempFile.Close()
 	if err != nil {
 		return err

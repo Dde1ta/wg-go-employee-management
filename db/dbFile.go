@@ -8,7 +8,7 @@ type DBFile struct {
 	fm *files.FileManager
 }
 
-func NewDBFile(dbFilePath string) *DBFile{
+func NewDBFile(dbFilePath string) *DBFile {
 	return &DBFile{
 		fm: files.NewFileManager(dbFilePath),
 	}

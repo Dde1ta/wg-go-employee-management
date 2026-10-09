@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log/slog"
 
-	"wg.dde1ta/repo"
 	"wg.dde1ta/entity"
 	"wg.dde1ta/global"
+	"wg.dde1ta/repo"
 )
 
 type AdminService struct {
@@ -15,11 +15,11 @@ type AdminService struct {
 	usersRepo    *repo.UsersReadOnlyRepo
 }
 
-func NewAdminService(dbFilePath string) AdminService{
+func NewAdminService(dbFilePath string) AdminService {
 	return AdminService{
 		employeeRepo: repo.NewEmployeeRepo(dbFilePath),
-		adminRepo: repo.NewAdminRepo(dbFilePath),
-		usersRepo: repo.NewUsersRepo(dbFilePath),
+		adminRepo:    repo.NewAdminRepo(dbFilePath),
+		usersRepo:    repo.NewUsersRepo(dbFilePath),
 	}
 }
 
@@ -45,7 +45,7 @@ func (AS *AdminService) UpdateEmployeeDetails(email, newData, field string) erro
 		err := AS.employeeRepo.UpdateEmployee(email, newData, field)
 
 		if err == nil {
-			slog.Info("EMPLOYEE SERIVCE: Employee data updated", "effected", email, "field", field ,"new", newData, "principal", session.UserEmail)
+			slog.Info("EMPLOYEE SERIVCE: Employee data updated", "effected", email, "field", field, "new", newData, "principal", session.UserEmail)
 		}
 		return err
 	default:

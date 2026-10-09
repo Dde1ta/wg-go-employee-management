@@ -5,7 +5,7 @@ import (
 	// "time"
 )
 
-type LockFile struct{
+type LockFile struct {
 	lockFile string
 	fileLock *flock.Flock
 }
@@ -26,7 +26,6 @@ func (lock *LockFile) UnlockWriteLock() error {
 }
 
 func (lock *LockFile) GetReadLock() error {
-	
 
 	return lock.fileLock.RLock()
 }

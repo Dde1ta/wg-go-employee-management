@@ -15,20 +15,20 @@ var forbiddenError error = errors.New("Forbidden action")
 
 type AuthService struct {
 	employeeRepo *repo.EmployeeRepo
-	usersRepo *repo.UsersReadOnlyRepo
-	adminRepo *repo.AdminRepo
+	usersRepo    *repo.UsersReadOnlyRepo
+	adminRepo    *repo.AdminRepo
 }
 
 func NewAuthService(dbFilePath string) AuthService {
 	return AuthService{
 		employeeRepo: repo.NewEmployeeRepo(dbFilePath),
-		adminRepo: repo.NewAdminRepo(dbFilePath),
-		usersRepo: repo.NewUsersRepo(dbFilePath),
+		adminRepo:    repo.NewAdminRepo(dbFilePath),
+		usersRepo:    repo.NewUsersRepo(dbFilePath),
 	}
 }
 
-func (auth *AuthService) CreateAdmin(email, password string) (error) {
-	session , ok := global.GetGlobalSession()
+func (auth *AuthService) CreateAdmin(email, password string) error {
+	session, ok := global.GetGlobalSession()
 
 	if !ok {
 		slog.Warn("AUTH SERIVCE: system not in setup Mode")
@@ -50,11 +50,11 @@ func (auth *AuthService) CreateAdmin(email, password string) (error) {
 	return nil
 }
 
-func (auth *AuthService) SignUpEmployee(name, email, password, phone, department, position string) (error) {
+func (auth *AuthService) SignUpEmployee(name, email, password, phone, department, position string) error {
 	return auth.employeeRepo.CreateEmployee(name, email, password, phone, department, position)
 }
 
-func (auth *AuthService) Login(email, givenPassword string) (error) {
+func (auth *AuthService) Login(email, givenPassword string) error {
 	user, err := auth.usersRepo.GetUserByEmail(email)
 
 	if err != nil {

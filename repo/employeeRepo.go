@@ -2,9 +2,9 @@ package repo
 
 import (
 	"fmt"
-	"slices"
 	"log/slog"
 	"runtime/debug"
+	"slices"
 
 	"wg.dde1ta/entity"
 )
@@ -43,21 +43,21 @@ func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department,
 	}
 
 	isUnique, err := ER.IsUniqueEmail(email)
-	
-	if err != nil {
-		return err
-	}
-	
-	if !isUnique {
-		return fmt.Errorf("%s email is already in use", email)
-	}
-	
-	isUnique, err = ER.IsUniqueContact(phone) 
 
 	if err != nil {
 		return err
 	}
-	
+
+	if !isUnique {
+		return fmt.Errorf("%s email is already in use", email)
+	}
+
+	isUnique, err = ER.IsUniqueContact(phone)
+
+	if err != nil {
+		return err
+	}
+
 	if !isUnique {
 		return fmt.Errorf("%s Phone is already in use", phone)
 	}

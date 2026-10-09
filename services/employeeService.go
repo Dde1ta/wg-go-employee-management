@@ -13,13 +13,13 @@ type EmployeeService struct {
 	employeeRepo *repo.EmployeeRepo
 }
 
-func NewEmployeeService(dbFilePath string) EmployeeService{
+func NewEmployeeService(dbFilePath string) EmployeeService {
 	return EmployeeService{
 		employeeRepo: repo.NewEmployeeRepo(dbFilePath),
 	}
 }
 
-func (ES *EmployeeService) GetEmployeeByEmail(email string) (*entity.Employee, error){
+func (ES *EmployeeService) GetEmployeeByEmail(email string) (*entity.Employee, error) {
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
@@ -34,7 +34,7 @@ func (ES *EmployeeService) GetEmployeeByEmail(email string) (*entity.Employee, e
 	return nil, errors.New("Forbidden action")
 }
 
-func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (error) {
+func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) error {
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
@@ -49,7 +49,7 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 		return ES.employeeRepo.UpdateEmployee(email, newData, field)
 	}
 
-	if session.UserEmail != email{
+	if session.UserEmail != email {
 		slog.Warn("EMPLOYEE SERIVCE: forbidden request to update", "affected=", email, "field=", field, "principal=", session.UserEmail)
 		return forbiddenError
 	}
@@ -59,11 +59,11 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 		return err
 	}
 
-	if field == "email"{
+	if field == "email" {
 		global.UpdateSessionEmail(newData)
 		slog.Info("EMPLOYEE SERIVCE: Session updated", "previous=", email, "new=", newData)
 	}
-	slog.Info("EMPLOYEE SERIVCE: Employee data updated", "effected=", email, "field=", field ,"new=", newData, "principal=", session.UserEmail)
+	slog.Info("EMPLOYEE SERIVCE: Employee data updated", "effected=", email, "field=", field, "new=", newData, "principal=", session.UserEmail)
 
 	return nil
 }

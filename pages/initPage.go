@@ -31,7 +31,7 @@ func InitPage() error {
 		if !ok || session.UserRole != "setup" {
 			return fmt.Errorf("login failed")
 		}
-	}else {
+	} else {
 		global.NewSessionContext(&entity.Admin{Email: "InitSetupMode", Role: "setup", PasswordHashed: ""})
 	}
 

@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	var datapath string;
+	var datapath string
 
 	value, exists := os.LookupEnv("DATAPATH")
 
@@ -24,16 +24,16 @@ func main() {
 		fmt.Printf("Failed to create data directory: %v\n", err)
 		panic("Data directory not created")
 	}
-	
-	logFile, err := os.OpenFile(filepath.Join(value + "/app.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	
+
+	logFile, err := os.OpenFile(filepath.Join(value+"/app.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+
 	if err != nil {
 		textLogger := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelError})
 		logger := slog.New(textLogger)
 		slog.SetDefault(logger)
 
 		slog.Error("Log File cannot be opened logging to Stdout", "err", err)
-	}else{
+	} else {
 		textLogger := slog.NewTextHandler(logFile, &slog.HandlerOptions{Level: slog.LevelDebug})
 		logger := slog.New(textLogger)
 		slog.SetDefault(logger)

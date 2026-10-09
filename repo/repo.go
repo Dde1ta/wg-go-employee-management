@@ -1,16 +1,16 @@
 package repo
 
 import (
+	"encoding/json"
 	"wg.dde1ta/db"
 	"wg.dde1ta/entity"
-	"encoding/json"
 )
 
 type repo struct {
 	db db.DB
 }
 
-func NewRepo (dbFilePath string) *repo {
+func NewRepo(dbFilePath string) *repo {
 	return &repo{
 		db: *db.NewDB(dbFilePath),
 	}

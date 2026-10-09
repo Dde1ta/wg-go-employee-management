@@ -27,7 +27,6 @@ func NewDB(dbFilePath string) *DB {
 	}
 }
 
-
 func (uw *UserWrapper) UnmarshalJSON(data []byte) error {
 	// Extract only the "role" field
 	var discriminator struct {
@@ -59,24 +58,24 @@ func (uw *UserWrapper) UnmarshalJSON(data []byte) error {
 }
 
 func (db *DB) GetDB() ([]UserWrapper, error) {
-    jsonRawSting, err := db.dbFile.fm.Read()
+	jsonRawSting, err := db.dbFile.fm.Read()
 
 	if err != nil {
 		return nil, err
 	}
 
-	var wrappers []UserWrapper;
+	var wrappers []UserWrapper
 
-	err = json.Unmarshal([]byte(jsonRawSting), &wrappers);
+	err = json.Unmarshal([]byte(jsonRawSting), &wrappers)
 
-	if  err != nil {
+	if err != nil {
 		return nil, err
 	}
 
 	return wrappers, nil
 }
 
-func (db *DB) SaveToDB(data string) (error) {
+func (db *DB) SaveToDB(data string) error {
 	err := db.dbFile.fm.Write(data)
 
 	return err

@@ -39,7 +39,7 @@ func (adm *Admin) ToJson() (string, error) {
 
 func (adm *Admin) GetProperty(property string) (Serializeable, error) {
 
-	var value MyString;
+	var value MyString
 
 	switch property {
 	case "email":

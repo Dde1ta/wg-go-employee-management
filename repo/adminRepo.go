@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"runtime/debug"
-	
+
 	"wg.dde1ta/entity"
 )
 
@@ -15,7 +15,7 @@ type AdminRepo struct {
 
 func NewAdminRepo(dbFilePath string) *AdminRepo {
 	return &AdminRepo{
-		repo: *NewRepo(dbFilePath),
+		repo:              *NewRepo(dbFilePath),
 		UsersReadOnlyRepo: *NewUsersRepo(dbFilePath),
 	}
 }
@@ -92,10 +92,10 @@ func (AR *AdminRepo) GetAdminByEmail(email string) (adm *entity.Admin, err error
 	for _, user := range users {
 		userEmail, _ := user.GetProperty("email")
 		userRole, _ := user.GetProperty("role")
-		if email == userEmail.ToString() && userRole.ToString() == "admin"{
-			if adm, ok := user.(*entity.Admin); ok { 
+		if email == userEmail.ToString() && userRole.ToString() == "admin" {
+			if adm, ok := user.(*entity.Admin); ok {
 				return adm, nil
-			 }
+			}
 		}
 	}
 
@@ -116,9 +116,8 @@ func (AR *AdminRepo) GetAllAdmins() (adminList []entity.Admin, err error) {
 		}
 	}()
 
-
 	users, err := AR.getUsers()
-	
+
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +127,7 @@ func (AR *AdminRepo) GetAllAdmins() (adminList []entity.Admin, err error) {
 	for _, user := range users {
 		userRole, _ := user.GetProperty("role")
 		if userRole.ToString() == "admin" {
-			if adm, ok := user.(*entity.Admin); ok{
+			if adm, ok := user.(*entity.Admin); ok {
 				adminList = append(adminList, *adm)
 			}
 		}
