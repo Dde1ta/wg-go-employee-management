@@ -3,27 +3,28 @@ package pages
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"wg.dde1ta/services"
 )
 
-var DBFILEPATH string
+var dbfilepath string
 var auth services.AuthService
 var employee services.EmployeeService
 var admin services.AdminService
 
 func init() {
-	value, exists := os.LookupEnv("DBFILEPATH")
+	value, exists := os.LookupEnv("DATAPATH")
 
 	if exists {
-		DBFILEPATH = value
+		dbfilepath = filepath.Join(value + "/db.json")
 	} else {
-		DBFILEPATH = "data/db.json"
+		dbfilepath = "data/db.json"
 	}
 
-	fmt.Println("Init: DBFILE set to", DBFILEPATH)
+	fmt.Println("Init: DBFILE set to", dbfilepath)
 
-	auth = services.NewAuthService(DBFILEPATH)
-	employee = services.NewEmployeeService(DBFILEPATH)
-	admin = services.NewAdminService(DBFILEPATH)
+	auth = services.NewAuthService(dbfilepath)
+	employee = services.NewEmployeeService(dbfilepath)
+	admin = services.NewAdminService(dbfilepath)
 }
