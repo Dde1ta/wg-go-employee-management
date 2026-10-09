@@ -2,6 +2,9 @@ package repo
 
 import (
 	"fmt"
+	"log/slog"
+	"runtime/debug"
+	
 	"wg.dde1ta/entity"
 )
 
@@ -17,7 +20,20 @@ func NewAdminRepo(dbFilePath string) *AdminRepo {
 	}
 }
 
-func (AR *AdminRepo) CreateAdmin(email, password string) (error) {
+func (AR *AdminRepo) CreateAdmin(email, password string) (err error) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
 	newAdminObj, err := entity.NewAdmin(
 		email, password,
 	)
@@ -53,7 +69,20 @@ func (AR *AdminRepo) CreateAdmin(email, password string) (error) {
 	return nil
 }
 
-func (AR *AdminRepo) GetAdminByEmail(email string) (*entity.Admin, error) {
+func (AR *AdminRepo) GetAdminByEmail(email string) (adm *entity.Admin, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			adm = nil
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
 	users, err := AR.getUsers()
 
 	if err != nil {
@@ -73,14 +102,28 @@ func (AR *AdminRepo) GetAdminByEmail(email string) (*entity.Admin, error) {
 	return nil, fmt.Errorf("Admin with email: %s not found", email)
 }
 
-func (AR *AdminRepo) GetAllAdmins() ([]entity.Admin, error) {
+func (AR *AdminRepo) GetAllAdmins() (adminList []entity.Admin, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("ADMIN REPO: recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			adminList = nil
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
+
 	users, err := AR.getUsers()
 	
 	if err != nil {
 		return nil, err
 	}
 
-	var adminList []entity.Admin = nil
+	adminList = nil
 
 	for _, user := range users {
 		userRole, _ := user.GetProperty("role")

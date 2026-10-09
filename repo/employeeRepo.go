@@ -3,6 +3,8 @@ package repo
 import (
 	"fmt"
 	"slices"
+	"log/slog"
+	"runtime/debug"
 
 	"wg.dde1ta/entity"
 )
@@ -19,7 +21,19 @@ func NewEmployeeRepo(dbFilePath string) *EmployeeRepo {
 	}
 }
 
-func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) error {
+func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department, position string) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
 	newEmployeeObj, err := entity.NewEmployee(
 		name, email, password, phone, department, position,
 	)
@@ -64,7 +78,19 @@ func (ER *EmployeeRepo) CreateEmployee(name, email, password, phone, department,
 	return nil
 }
 
-func (ER *EmployeeRepo) GetEmployeeByEmail(email string) (*entity.Employee, error) {
+func (ER *EmployeeRepo) GetEmployeeByEmail(email string) (emp *entity.Employee, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+			emp = nil
+			err = fmt.Errorf("Unexcepted error see logs")
+		}
+	}()
+
 	users, err := ER.getUsers()
 
 	if err != nil {
@@ -84,10 +110,22 @@ func (ER *EmployeeRepo) GetEmployeeByEmail(email string) (*entity.Employee, erro
 	return nil, fmt.Errorf("Employee with email: %s not found", email)
 }
 
-func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field string) error {
+func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field string) (err error) {
 	/**
 	Valid Fields := Name, Email, Password, Contact Number
 	*/
+
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
 
 	users, err := ER.getUsers()
 
@@ -146,7 +184,19 @@ func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field strin
 	return ER.saveToDB(users)
 }
 
-func (ER *EmployeeRepo) DeleteEmployee(email string) error {
+func (ER *EmployeeRepo) DeleteEmployee(email string) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
 	users, err := ER.getUsers()
 
 	if err != nil {
@@ -172,14 +222,24 @@ func (ER *EmployeeRepo) DeleteEmployee(email string) error {
 	return ER.saveToDB(users)
 }
 
-func (ER *EmployeeRepo) GetAllEmployees() ([]entity.Employee, error) {
+func (ER *EmployeeRepo) GetAllEmployees() (employeeList []entity.Employee, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+			employeeList = nil
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
 	users, err := ER.getUsers()
 
 	if err != nil {
 		return nil, err
 	}
-
-	var employeeList []entity.Employee
 
 	for _, user := range users {
 		userRole, _ := user.GetProperty("role")

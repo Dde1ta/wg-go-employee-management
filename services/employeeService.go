@@ -2,7 +2,8 @@ package services
 
 import (
 	"errors"
-	"fmt"
+	"log/slog"
+
 	"wg.dde1ta/entity"
 	"wg.dde1ta/global"
 	"wg.dde1ta/repo"
@@ -29,11 +30,11 @@ func (ES *EmployeeService) GetEmployeeByEmail(email string) (*entity.Employee, e
 		return ES.employeeRepo.GetEmployeeByEmail(email)
 	}
 
+	slog.Warn("EMPLOYEE SERIVCE: forbidden request to get employee", "email=", session.UserEmail)
 	return nil, errors.New("Forbidden action")
 }
 
 func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (error) {
-	fmt.Printf("DEBUG: Update call %s %s %s\n", email, newData, field)
 	session, ok := global.GetGlobalSession()
 
 	if !ok {
@@ -42,12 +43,14 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 
 	if field == "department" || field == "position" {
 		if session.UserRole != "admin" {
+			slog.Warn("EMPLOYEE SERIVCE: forbidden request to update", "email=", session.UserEmail, "field=", field)
 			return forbiddenError
 		}
 		return ES.employeeRepo.UpdateEmployee(email, newData, field)
 	}
 
 	if session.UserEmail != email{
+		slog.Warn("EMPLOYEE SERIVCE: forbidden request to update", "affected=", email, "field=", field, "principal=", session.UserEmail)
 		return forbiddenError
 	}
 	err := ES.employeeRepo.UpdateEmployee(email, newData, field)
@@ -58,6 +61,7 @@ func (ES *EmployeeService) UpdateEmployeeDetails(email, newData, field string) (
 
 	if field == "email"{
 		global.UpdateSessionEmail(newData)
+		slog.Info("EMPLOYEE SERIVCE: Session updated", "previous=", email, "new=", newData)
 	}
 
 	return nil

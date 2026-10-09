@@ -3,6 +3,9 @@ package repo
 
 import (
 	"wg.dde1ta/entity"
+	"log/slog"
+	"runtime/debug"
+
 	"fmt"
 )
 
@@ -17,7 +20,19 @@ func NewUsersRepo(dbFilePath string) *UsersReadOnlyRepo {
 }
 
 
-func (UR *UsersReadOnlyRepo) GetUserByEmail(email string) (*entity.User, error) {
+func (UR *UsersReadOnlyRepo) GetUserByEmail(email string) (user *entity.User, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+
 	users, err := UR.getUsers()
 
 	if err != nil {
@@ -34,7 +49,18 @@ func (UR *UsersReadOnlyRepo) GetUserByEmail(email string) (*entity.User, error) 
 	return nil, fmt.Errorf("User with email: %s not found", email)
 }
 
-func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (bool, error) {
+func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (ok bool, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+			ok = false
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
 	users, err := UR.getUsers()
 
 	if err != nil {
@@ -51,7 +77,19 @@ func (UR *UsersReadOnlyRepo) IsUniqueEmail(email string) (bool, error) {
 	return true, nil
 }
 
-func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (bool, error) {
+func (UR *UsersReadOnlyRepo) IsUniqueContact(contact string) (ok bool, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			// 2. Log the panic value and the stack trace as slog attributes
+			slog.Error("recovered from panic",
+				slog.Any("panic_value", r),
+				slog.String("stack", string(debug.Stack())),
+			)
+			ok = false
+			err = fmt.Errorf("Unexcepted err see logs")
+		}
+	}()
+	
 	fmt.Println("Debug: Checking Unique Update")
 
 	users, err := UR.getUsers()

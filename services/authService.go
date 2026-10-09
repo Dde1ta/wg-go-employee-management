@@ -2,6 +2,9 @@ package services
 
 import (
 	"errors"
+	"fmt"
+	"log/slog"
+
 	"golang.org/x/crypto/bcrypt"
 	"wg.dde1ta/global"
 	"wg.dde1ta/repo"
@@ -25,7 +28,26 @@ func NewAuthService(dbFilePath string) AuthService {
 }
 
 func (auth *AuthService) CreateAdmin(email, password string) (error) {
-	return auth.adminRepo.CreateAdmin(email, password)
+	session , ok := global.GetGlobalSession()
+
+	if !ok {
+		slog.Warn("AUTH SERIVCE: system not in setup Mode")
+		return fmt.Errorf("Not in setup mode")
+	}
+
+	if session.UserRole != "setup" {
+		slog.Warn("AUTH SERIVCE: Role is not Setup for user", "email=", session.UserEmail)
+		return fmt.Errorf("Forbidden")
+	}
+
+	err := auth.adminRepo.CreateAdmin(email, password)
+
+	if err != nil {
+		return err
+	}
+
+	slog.Info("AUTH SERIVCE: New admin created", "newAdmin=", email, "principal=", session.UserEmail)
+	return nil
 }
 
 func (auth *AuthService) SignUpEmployee(name, email, password, phone, department, position string) (error) {
@@ -50,6 +72,8 @@ func (auth *AuthService) Login(email, givenPassword string) (error) {
 	}
 
 	global.NewSessionContext(userCopy)
+
+	slog.Info("AUTH SERIVCE: Login by", "userEmail=", email)
 
 	return nil
 }

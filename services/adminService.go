@@ -2,6 +2,8 @@ package services
 
 import (
 	"fmt"
+	"log/slog"
+
 	"wg.dde1ta/repo"
 	"wg.dde1ta/entity"
 	"wg.dde1ta/global"
@@ -31,15 +33,18 @@ func (AS *AdminService) UpdateEmployeeDetails(id, newData, field string) error {
 	switch field {
 	case "department":
 		if session.UserRole != "admin" {
+			slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
 			return forbiddenError
 		}
 		return AS.employeeRepo.UpdateEmployee(id, newData, field)
 	case "position":
 		if session.UserRole != "admin" {
+			slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
 			return forbiddenError
 		}
 		return AS.employeeRepo.UpdateEmployee(id, newData, field)
 	default:
+		slog.Error("ADMIN SERIVCE: Invalid field", "field=", field, "email=", session.UserEmail)
 		return fmt.Errorf("Invalid Field %s, Vaild are position, department", field)
 	}
 }
@@ -52,6 +57,7 @@ func (AS *AdminService) DeleteEmployee(id string) error {
 	}
 
 	if session.UserRole != "admin" {
+		slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
 		return forbiddenError
 	}
 
@@ -66,6 +72,7 @@ func (AS *AdminService) GetAllEmployees() ([]entity.Employee, error) {
 	}
 
 	if session.UserRole != "admin" {
+		slog.Warn("ADMIN SERIVCE: Role is not admin for user", "email=", session.UserEmail)
 		return nil, forbiddenError
 	}
 

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"wg.dde1ta/entity"
 	"wg.dde1ta/global"
 )
 
@@ -30,6 +31,8 @@ func InitPage() error {
 		if !ok || session.UserRole != "setup" {
 			return fmt.Errorf("login failed")
 		}
+	}else {
+		global.NewSessionContext(&entity.Admin{Email: "InitSetupMode", Role: "setup", PasswordHashed: ""})
 	}
 
 	fmt.Println("\n--- Admin Setup ---")
