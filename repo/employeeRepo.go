@@ -135,7 +135,11 @@ func (ER *EmployeeRepo) UpdateEmployee(email string, newData string, field strin
 	var value entity.MyString
 	value.CopyString(newData)
 
-	employeeToUpdate.SetProperty(field, &value)
+	err = employeeToUpdate.SetProperty(field, &value)
+
+	if err != nil {
+		return err
+	}
 
 	users[employeeIndex] = employeeToUpdate
 
